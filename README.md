@@ -52,7 +52,7 @@ To know the operations that are supported by a resource, please check the resour
 
 ### Querying
 
-For most of the query methods, you can pass either a Hash with the parameters described in the API documentation or, if you prefer an object oriented way, you can use the [SearchParams classes](lib/nova/search_params), that offer the same functionality but as an object.
+For most of the query methods, you can pass either a Hash with the parameters described in the API documentation or, if you prefer an object oriented way, you can use the [SearchParams classes](lib/nova/api/search_params), that offer the same functionality but as an object.
 
 ## Development
 
