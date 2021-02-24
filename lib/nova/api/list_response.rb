@@ -14,7 +14,6 @@ module Nova
 
         parsed_response = response.parsed_response
 
-        errors = []
         records = nil
 
         if parsed_response.is_a?(Array)
@@ -22,15 +21,21 @@ module Nova
         else
           parsed_response = parsed_response.to_h
 
-          errors =
-            if parsed_response.has_key?('error')
-              parsed_response['error'].is_a?(Array) ? parsed_response['error'] : [parsed_response['error']]
-            elsif parsed_response.has_key?('errors')
-              parsed_response['errors'].is_a?(Array) ? parsed_response['errors'] : [parsed_response['errors']]
-            end
+          errors = extract_error_from_response('error', parsed_response)
+          errors ||= extract_error_from_response('errors', parsed_response)
         end
 
+        errors ||= []
+
         new(success: success, errors: errors, records: records)
+      end
+
+      private
+
+      def self.extract_error_from_response(field, response)
+        return unless response.has_key?(field)
+
+        response[field].is_a?(Array) ? response[field] : [response[field]]
       end
     end
   end

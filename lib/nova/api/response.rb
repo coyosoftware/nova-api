@@ -14,20 +14,25 @@ module Nova
 
         parsed_response = response.parsed_response.to_h
 
-        errors = []
         record = nil
 
-        if parsed_response.has_key?('error')
-          errors = parsed_response['error'].is_a?(Array) ? parsed_response['error'] : [parsed_response['error']]
-        elsif parsed_response.has_key?('errors')
-          errors = parsed_response['errors'].is_a?(Array) ? parsed_response['errors'] : [parsed_response['errors']]
-        end
+        errors = extract_error_from_response('error', parsed_response)
+        errors ||= extract_error_from_response('errors', parsed_response)
+        errors ||= []
 
         if object
           record = object.id.nil? ? object.class.new(object.attributes.merge(id: parsed_response['id'])) : object
         end
 
         new(success: success, errors: errors, record: record)
+      end
+
+      private
+
+      def self.extract_error_from_response(field, response)
+        return unless response.has_key?(field)
+
+        response[field].is_a?(Array) ? response[field] : [response[field]]
       end
     end
   end
