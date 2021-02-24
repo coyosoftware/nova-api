@@ -26,8 +26,10 @@ module Nova
       end
     end
 
-    def apportionments
-      
+    class Client
+      def apportionments
+        Nova::API::Resource::Apportionment
+      end
     end
   end
 end

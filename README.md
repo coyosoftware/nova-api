@@ -34,17 +34,25 @@ Or install it yourself as:
 First set your credentials and subdomain using the ```configure``` method of the ```Nova::API``` class:
 
 ```ruby
-    Nova::API.configure do |config|
-        config.api_key = 'your-api-key'
-        config.subdomain = 'your-subdomain'
-    end
+Nova::API.configure do |config|
+  config.api_key = 'your-api-key'
+  config.subdomain = 'your-subdomain'
+end
 ```
 
 After that you can start using the resources either by:
 
-- Instantiating a new ```Nova::API``` object;
+- Instantiating a new ```Nova::API::Client``` object;
+
 or
-- Using directly the available resource class (locate under [api/resource](lib/nova/api/resource))
+
+- Using directly the available resource class (check the resources under [api/resource](lib/nova/api/resource) folder)
+
+To know the operations that are supported by a resource, please check the resource source code under the [api/resource](lib/nova/api/resource) folder.
+
+### Querying
+
+For most of the query methods, you can pass either a Hash with the parameters described in the API documentation or, if you prefer an object oriented way, you can use the [SearchParams classes](lib/nova/search_params), that offer the same functionality but as an object.
 
 ## Development
 

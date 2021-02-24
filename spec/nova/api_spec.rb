@@ -12,4 +12,10 @@ RSpec.describe Nova::API do
       expect { described_class.configure { |config| config.subdomain = 'foobarbaz' } }.to change(described_class.configuration, :subdomain).to 'foobarbaz'
     end
   end
+
+  describe "#apportionments" do
+    it 'returns the Nova::API::Resource::Apportionment class' do
+      expect(Nova::API::Client.new.apportionments).to eq(Nova::API::Resource::Apportionment)
+    end
+  end
 end
