@@ -1,13 +1,10 @@
 Nova::API
 ========
-
-[![Circle Build Status](https://circleci.com/gh/nova-api/nova-api.png?style=shield)](https://circleci.com/gh/nova-api/nova-api)
+[![Circle Build Status](https://circleci.com/gh/coyosoftware/nova-api.png?style=shield)](https://circleci.com/gh/nova-api/nova-api)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4592d8beaac2e6a18839/maintainability)](https://codeclimate.com/github/coyosoftware/nova-api/maintainability)
 [![Gem Version](https://badge.fury.io/rb/nova-api.svg)](http://badge.fury.io/rb/nova-api)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
 [![Downloads](https://img.shields.io/gem/dt/nova-api.svg?style=flat)](https://rubygems.org/gems/nova-api)
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
-
 
 # Introduction
 
