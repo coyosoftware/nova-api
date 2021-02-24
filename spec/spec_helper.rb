@@ -1,5 +1,16 @@
+require 'simplecov'
+SimpleCov.start
+
 require "bundler/setup"
 require "nova/api"
+require 'webmock/rspec'
+require 'rspec/dry/struct'
+
+require 'support/authorization_helper'
+
+WebMock.disable_net_connect!
+
+require 'byebug'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -11,4 +22,6 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.include AuthorizationHelper
 end

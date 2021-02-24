@@ -1,4 +1,15 @@
-# Nova::API
+Nova::API
+========
+
+[![Circle Build Status](https://circleci.com/gh/nova-api/nova-api.png?style=shield)](https://circleci.com/gh/nova-api/nova-api)
+[![Maintainability](https://api.codeclimate.com/v1/badges/4592d8beaac2e6a18839/maintainability)](https://codeclimate.com/github/coyosoftware/nova-api/maintainability)
+[![Gem Version](https://badge.fury.io/rb/nova-api.svg)](http://badge.fury.io/rb/nova-api)
+[![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
+[![Downloads](https://img.shields.io/gem/dt/nova-api.svg?style=flat)](https://rubygems.org/gems/nova-api)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
+
+
+# Introduction
 
 Gem to consume the [Nova.Money API](https://app.swaggerhub.com/apis-docs/coyosoftware/Nova.Money/v1)
 
@@ -20,7 +31,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+First set your credentials and subdomain using the ```configure``` method of the ```Nova::API``` class:
+
+```ruby
+    Nova::API.configure do |config|
+        config.api_key = 'your-api-key'
+        config.subdomain = 'your-subdomain'
+    end
+```
+
+After that you can start using the resources either by:
+
+- Instantiating a new ```Nova::API``` object;
+or
+- Using directly the available resource class (locate under [api/resource](lib/nova/api/resource))
 
 ## Development
 
@@ -30,7 +54,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/nova-api.
+Bug reports and pull requests are welcome on GitHub at https://github.com/coyosoftware/nova-api.
 
 ## License
 
