@@ -4,7 +4,7 @@ require 'dry-types'
 
 module Nova
   module API
-    class ListResponse < Dry::Struct
+    class ListResponse < Nova::API::Utils::BaseStruct
       attribute :records, Dry::Types['strict.array'].of(Dry::Types['nominal.any']).optional
       attribute :errors, Dry::Types['strict.array'].of(Dry::Types['coercible.string'])
       attribute :success, Dry::Types['strict.bool']
