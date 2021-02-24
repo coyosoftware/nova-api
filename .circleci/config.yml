@@ -10,6 +10,22 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Which bundler?
-          command: bundle -v
-      - ruby/bundle-install
+          name: Setup Rubygems
+          command: bash .circleci/setup-rubygems.sh
+      - run:
+          name: Publish to Rubygems
+          command: |
+            gem build nova-api.gemspec
+            gem push "nova-api-$(git describe --tags).gem"
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - build
+      - deploy:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
