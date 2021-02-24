@@ -3,7 +3,19 @@ orbs:
   ruby: circleci/ruby@0.1.2 
 
 jobs:
-  build:
+  test:
+    docker:
+      - image: circleci/ruby:2.6.3-stretch-node
+    executor: ruby/default
+    steps:
+      - checkout
+      - run:
+          name: Bundle
+          command: bash bin/setup
+      - run:
+          name: Run tests
+          command: bundle exec rspec
+  deploy:
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
     executor: ruby/default
@@ -22,7 +34,7 @@ workflows:
   version: 2
   test-deploy:
     jobs:
-      - build
+      - test
       - deploy:
           filters:
             tags:
