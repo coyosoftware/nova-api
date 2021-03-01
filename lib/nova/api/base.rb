@@ -12,16 +12,36 @@ module Nova
       SCHEME = 'https'
       HOST = 'nova.money'
 
+      def self.endpoint
+        raise EndpointNotConfiguredError, 'Each class must implement its own endpoint'
+      end
+
       def self.base_url
         raise Nova::API::MissingSubdomainError, 'The subdomain must be informed' if configuration.subdomain.nil? || configuration.subdomain.empty?
 
         "#{SCHEME}://#{configuration.subdomain}.#{HOST}"
       end
 
+      def endpoint
+        raise EndpointNotConfiguredError, 'Each class must implement its own endpoint'
+      end
+
       protected
 
-      def self.initialize_empty_model_with_id(klass, id)
-        klass.new(Hash[*klass.attribute_names.map{ |key| [key, nil] }.flatten].merge(id: id))
+      def allowed_attributes
+        return attributes unless self.class.const_defined?('ALLOWED_ATTRIBUTES')
+
+        data = attributes.dup
+
+        data.keys.each { |key| data.delete(key.to_sym) unless self.class.const_get('ALLOWED_ATTRIBUTES').include?(key.to_sym) }
+
+        data
+      end
+
+      def self.initialize_empty_model_with_id(klass, id, additional_attributes = {})
+        data = klass.attribute_names.map { |key| additional_attributes[key] ? [key, additional_attributes[key]] : [key, nil] }
+
+        klass.new(Hash[*data.flatten].merge(id: id))
       end
 
       def self.do_get_search(endpoint, query, headers = {})
@@ -65,8 +85,8 @@ module Nova
         Nova::API::Response.build(response, self)
       end
 
-      def protect_operation_from_missing_id
-        raise Nova::API::MissingIdError, 'This operation requires an ID to be set' if id.nil?
+      def protect_operation_from_missing_value(attribute = :id)
+        raise Nova::API::MissingIdError, 'This operation requires an ID to be set' if send(attribute).nil?
       end
 
       private

@@ -1,4 +1,6 @@
-RSpec.describe Nova::API::Resource::Apportionment do
+RSpec.describe Nova::API::Resource::ApportionmentValue do
+  let(:apportionment_id) { 88 }
+
   before(:all) do
     Nova::API.configure do |config|
       config.subdomain = 'foobar'
@@ -12,105 +14,12 @@ RSpec.describe Nova::API::Resource::Apportionment do
     it { is_expected.to have_attribute(:id, Dry::Types['coercible.integer'].optional) }
     it { is_expected.to have_attribute(:name, Dry::Types['coercible.string']) }
     it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
-    it { is_expected.to have_attribute(:values, Dry::Types['strict.array'].of(Nova::API::Resource::ApportionmentValue).optional) }
+    it { is_expected.to have_attribute(:apportionment_id, Dry::Types['coercible.integer']) }
   end
 
   describe '.endpoint' do
-    it 'returns the apportionment endpoint' do
-      expect(described_class.endpoint).to eq('/api/apportionments')
-    end
-  end
-
-  describe '.list' do
-    let(:parameters) { { q: 'foobar' } }
-    let(:data) do
-      [
-        { id: 99, name: 'abc', active: true, values: [{ id: 99, name: 'cba', active: true, apportionment_id: 99 }, { id: 1, name: 'aaa', active: false, apportionment_id: 99 }] },
-        { id: 1, name: 'foobar', active: false, values: [{ id: 98, name: 'foo', active: false, apportionment_id: 1 }, { id: 2, name: 'bar', active: false, apportionment_id: 1 }] }
-      ]
-    end
-    let(:response) do
-      double(:response, success?: true, parsed_response: data)
-    end
-
-    subject { described_class.list(Nova::API::SearchParams::Apportionment.new parameters) }
-
-    it 'issues a get to the apportionment list endpoint' do
-      expect(described_class).to receive(:get).with(described_class.endpoint, query: parameters, headers: authorization_header).and_return(response)
-
-      subject
-    end
-
-    context 'with a successful response' do
-      let(:id) { 99 }
-
-      before do
-        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
-          to_return(status: 200, body: JSON.generate(data))
-      end
-
-      it 'returns the response object' do
-        expect(subject).to be_a(Nova::API::ListResponse)
-      end
-
-      it 'returns no error' do
-        response = subject
-
-        expect(response.errors).to be_empty
-      end
-
-      it 'returns the records' do
-        response = subject
-
-        expect(response.records).to all(be_a(Nova::API::Resource::Apportionment))
-
-        expect(response.records[0].id).to eq(data[0][:id])
-        expect(response.records[0].name).to eq(data[0][:name])
-        expect(response.records[0].active).to eq(data[0][:active])
-
-        expect(response.records[0].values).to all(be_a(Nova::API::Resource::ApportionmentValue))
-
-        expect(response.records[0].values[0].id).to eq(data[0][:values][0][:id])
-        expect(response.records[0].values[0].name).to eq(data[0][:values][0][:name])
-        expect(response.records[0].values[0].active).to eq(data[0][:values][0][:active])
-        expect(response.records[0].values[0].apportionment_id).to eq(data[0][:values][0][:apportionment_id])
-        expect(response.records[0].values[1].id).to eq(data[0][:values][1][:id])
-        expect(response.records[0].values[1].name).to eq(data[0][:values][1][:name])
-        expect(response.records[0].values[1].active).to eq(data[0][:values][1][:active])
-        expect(response.records[0].values[1].apportionment_id).to eq(data[0][:values][1][:apportionment_id])
-
-        expect(response.records[1].id).to eq(data[1][:id])
-        expect(response.records[1].name).to eq(data[1][:name])
-        expect(response.records[1].active).to eq(data[1][:active])
-        expect(response.records[1].values[0].id).to eq(data[1][:values][0][:id])
-        expect(response.records[1].values[0].name).to eq(data[1][:values][0][:name])
-        expect(response.records[1].values[0].active).to eq(data[1][:values][0][:active])
-        expect(response.records[1].values[0].apportionment_id).to eq(data[1][:values][0][:apportionment_id])
-        expect(response.records[1].values[1].id).to eq(data[1][:values][1][:id])
-        expect(response.records[1].values[1].name).to eq(data[1][:values][1][:name])
-        expect(response.records[1].values[1].active).to eq(data[1][:values][1][:active])
-        expect(response.records[1].values[1].apportionment_id).to eq(data[1][:values][1][:apportionment_id])
-      end
-    end
-
-    context 'with an error response' do
-      let(:errors) { ['foo', 'bar'] }
-
-      before do
-        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
-      end
-
-      it 'returns the response object' do
-        expect(subject).to be_a(Nova::API::ListResponse)
-      end
-
-      it 'returns the apportionment with its errors' do
-        response = subject
-
-        expect(response.records).to be_nil
-        expect(response.errors).to match_array(errors)
-      end
+    it 'returns the apportionment value endpoint' do
+      expect(described_class.endpoint(apportionment_id)).to eq("/api/apportionments/#{apportionment_id}/apportionment_values")
     end
   end
 
@@ -119,10 +28,10 @@ RSpec.describe Nova::API::Resource::Apportionment do
     let(:parameters) { { name: name } }
     let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
-    subject { described_class.create(parameters) }
+    subject { described_class.create(apportionment_id, parameters) }
 
     it 'issues a post to the apportionment create endpoint' do
-      expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
+      expect(described_class).to receive(:post).with(described_class.endpoint(apportionment_id), body: parameters, headers: authorization_header).and_return(response)
 
       subject
     end
@@ -131,7 +40,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
       let(:id) { 99 }
 
       before do
-        stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
+        stub_request(:post, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}").
           to_return(status: 201, body: JSON.generate({ id: id }))
       end
 
@@ -158,7 +67,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
       let(:errors) { ['foo', 'bar'] }
 
       before do
-        stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
+        stub_request(:post, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}").
           to_return(status: 400, body: JSON.generate({ errors: errors }))
       end
 
@@ -181,7 +90,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
       let(:parameters) { { name: name } }
 
       it 'raises the missing id error' do
-        expect { described_class.update(nil, parameters) }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+        expect { described_class.update(apportionment_id, nil, parameters) }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
       end
     end
 
@@ -191,17 +100,17 @@ RSpec.describe Nova::API::Resource::Apportionment do
       let(:parameters) { { name: name } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
-      subject { described_class.update(id, parameters) }
+      subject { described_class.update(apportionment_id, id, parameters) }
 
       it 'issues a patch to the apportionment update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint(apportionment_id)}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
 
         subject
       end
 
       context 'with a successful response' do
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 200, body: nil)
         end
 
@@ -228,7 +137,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 
@@ -248,7 +157,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
 
   describe '.destroy' do
     context 'when the id is not set' do
-      subject { described_class.destroy(nil) }
+      subject { described_class.destroy(apportionment_id, nil) }
 
       it 'raises the missing id error' do
         expect { subject }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
@@ -259,17 +168,17 @@ RSpec.describe Nova::API::Resource::Apportionment do
       let(:id) { 99 }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
-      subject { described_class.destroy(id) }
+      subject { described_class.destroy(apportionment_id, id) }
 
       it 'issues a delete to the apportionment delete endpoint' do
-        expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:delete).with("#{described_class.endpoint(apportionment_id)}/#{id}", headers: authorization_header).and_return(response)
 
         subject
       end
 
       context 'with a successful response' do
         before do
-          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 200, body: nil)
         end
 
@@ -290,7 +199,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 
@@ -311,7 +220,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
 
   describe '.reactivate' do
     context 'when the id is not set' do
-      subject { described_class.reactivate(nil) }
+      subject { described_class.reactivate(apportionment_id, nil) }
 
       it 'raises the missing id error' do
         expect { subject }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
@@ -322,17 +231,17 @@ RSpec.describe Nova::API::Resource::Apportionment do
       let(:id) { 99 }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
-      subject { described_class.reactivate(id) }
+      subject { described_class.reactivate(apportionment_id, id) }
 
       it 'issues a patch to the apportionment reactivate endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}/reactivate", headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint(apportionment_id)}/#{id}/reactivate", headers: authorization_header).and_return(response)
 
         subject
       end
 
       context 'with a successful response' do
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}/reactivate").
             to_return(status: 200, body: nil)
         end
 
@@ -353,7 +262,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}/reactivate").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 
@@ -372,28 +281,16 @@ RSpec.describe Nova::API::Resource::Apportionment do
     end
   end
 
-  describe '#endpoint' do
-    let(:id) { 99 }
-    let(:name) { 'foobar' }
-    let(:parameters) { { name: name, id: id } }
-
-    subject { described_class.new(parameters) }
-
-    it 'returns the apportionment endpoint' do
-      expect(subject.endpoint).to eq("/api/apportionments/#{id}")
-    end
-  end
-
   describe '#save' do
     context 'when the id is not set' do
       let(:name) { 'foobar' }
       let(:parameters) { { name: name } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
-      subject { described_class.new(parameters) }
+      subject { described_class.new(parameters.merge(apportionment_id: apportionment_id)) }
 
       it 'issues a post to the apportionment create endpoint' do
-        expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:post).with(described_class.endpoint(apportionment_id), body: { name: name }, headers: authorization_header).and_return(response)
 
         subject.save
       end
@@ -402,7 +299,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:id) { 99 }
 
         before do
-          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
+          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}").
             to_return(status: 201, body: JSON.generate({ id: id }))
         end
 
@@ -429,7 +326,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
+          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 
@@ -449,20 +346,20 @@ RSpec.describe Nova::API::Resource::Apportionment do
     context 'when the id is set' do
       let(:id) { 99 }
       let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
+      let(:parameters) { { id: id, name: name, apportionment_id: apportionment_id } }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
       subject { described_class.new(parameters) }
 
       it 'issues a patch to the apportionment update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint(apportionment_id)}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
 
         subject.save
       end
 
       context 'with a successful response' do
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 200, body: nil)
         end
 
@@ -489,7 +386,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 
@@ -522,20 +419,20 @@ RSpec.describe Nova::API::Resource::Apportionment do
     context 'when the id is set' do
       let(:id) { 99 }
       let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
+      let(:parameters) { { id: id, name: name, apportionment_id: apportionment_id } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
       subject { described_class.new(parameters) }
 
       it 'issues a patch to the apportionment update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint(apportionment_id)}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
 
         subject.update
       end
 
       context 'with a successful response' do
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 200, body: nil)
         end
 
@@ -562,7 +459,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 
@@ -595,20 +492,20 @@ RSpec.describe Nova::API::Resource::Apportionment do
     context 'when the id is set' do
       let(:id) { 99 }
       let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
+      let(:parameters) { { id: id, name: name, apportionment_id: apportionment_id } }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
       subject { described_class.new(parameters) }
 
       it 'issues a delete to the apportionment delete endpoint' do
-        expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:delete).with("#{described_class.endpoint(apportionment_id)}/#{id}", headers: authorization_header).and_return(response)
 
         subject.destroy
       end
 
       context 'with a successful response' do
         before do
-          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 200, body: nil)
         end
 
@@ -633,7 +530,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
+          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 
@@ -671,20 +568,20 @@ RSpec.describe Nova::API::Resource::Apportionment do
     context 'when the id is set' do
       let(:id) { 99 }
       let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
+      let(:parameters) { { id: id, name: name, apportionment_id: apportionment_id } }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
       subject { described_class.new(parameters) }
 
       it 'issues a patch to the apportionment reactivate endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}/reactivate", headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint(apportionment_id)}/#{id}/reactivate", headers: authorization_header).and_return(response)
 
         subject.reactivate
       end
 
       context 'with a successful response' do
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}/reactivate").
             to_return(status: 200, body: nil)
         end
 
@@ -709,7 +606,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}/reactivate").
             to_return(status: 400, body: JSON.generate({ errors: errors }))
         end
 

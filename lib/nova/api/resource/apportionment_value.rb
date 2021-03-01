@@ -1,57 +1,51 @@
 module Nova
   module API
     module Resource
-      class Apportionment < Nova::API::Base
+      class ApportionmentValue < Nova::API::Base
         ALLOWED_ATTRIBUTES = %i[name]
 
         attribute? :id, Dry::Types['coercible.integer'].optional
         attribute :name, Dry::Types['coercible.string']
         attribute? :active, Dry::Types['strict.bool'].optional
-        attribute? :values, Dry::Types['strict.array'].of(Nova::API::Resource::ApportionmentValue).optional
+        attribute? :apportionment_id, Dry::Types['coercible.integer']
 
-        def self.endpoint
-          '/api/apportionments'
+        def self.endpoint(apportionment_id)
+          "/api/apportionments/#{apportionment_id}/apportionment_values"
         end
 
-        def self.list(parameters = {})
-          do_get_search(endpoint, parameters.to_h)
-        end
-
-        def self.create(parameters)
-          model = new parameters
+        def self.create(apportionment_id, parameters)
+          model = new parameters.merge(apportionment_id: apportionment_id)
 
           model.attributes.delete(:id)
 
           model.save
         end
 
-        def self.update(id, parameters)
-          model = new parameters.merge(id: id)
+        def self.update(apportionment_id, id, parameters)
+          model = new parameters.merge(id: id, apportionment_id: apportionment_id)
 
           model.update
         end
 
-        def self.destroy(id)
-          model = initialize_empty_model_with_id(self, id)
+        def self.destroy(apportionment_id, id)
+          model = initialize_empty_model_with_id(self, id, apportionment_id: apportionment_id)
 
           model.destroy
         end
 
-        def self.reactivate(id)
-          model = initialize_empty_model_with_id(self, id)
+        def self.reactivate(apportionment_id, id)
+          model = initialize_empty_model_with_id(self, id, apportionment_id: apportionment_id)
 
           model.reactivate
         end
 
         def endpoint
-          protect_operation_from_missing_value
-
-          "/api/apportionments/#{id}"
+          "/api/apportionments/#{apportionment_id}/apportionment_values/#{id}"
         end
 
         def save
           if id.nil?
-            do_post(self.class.endpoint, allowed_attributes)
+            do_post(self.class.endpoint(apportionment_id), allowed_attributes)
           else
             do_patch("#{endpoint}", allowed_attributes)
           end
