@@ -92,7 +92,7 @@ module Nova
       private
 
       def self.authorization_header
-        { HTTP_PERSISTENT_TOKEN: configuration.api_key }
+        { PERSISTENT_TOKEN: configuration.api_key }
       end
       def_delegator self, :authorization_header
 

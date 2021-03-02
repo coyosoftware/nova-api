@@ -4,7 +4,7 @@ PATH
     nova-api (0.1.0)
       dry-struct (~> 1.4.0)
       dry-types (~> 1.5.1)
-      httparty (~> 0.18)
+      httparty (~> 0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -46,7 +46,7 @@ GEM
     ice_nine (0.11.2)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2021.0212)
+    mime-types-data (3.2021.0225)
     multi_xml (0.6.0)
     public_suffix (4.0.6)
     rake (10.5.0)
