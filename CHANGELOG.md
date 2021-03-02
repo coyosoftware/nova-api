@@ -9,15 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added 
 
-- Apportionment related stuff
-
 ### Fixed
 
-## [0.1.0] - 2021-02-25
+## [0.1.1] - 2021-03-02
 
 ### Added
 
-### Changed
+- Apportionment related stuff
 
-[unreleased]: https://github.com/coyosoftware/nova-api/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/coyosoftware/nova-api/releases/tag/v0.1.0
+[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/coyosoftware/nova-api/releases/tag/0.1.1
