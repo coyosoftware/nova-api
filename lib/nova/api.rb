@@ -32,6 +32,10 @@ module Nova
       def apportionments
         Nova::API::Resource::Apportionment
       end
+
+      def apportionment_values
+        Nova::API::Resource::ApportionmentValue
+      end
     end
   end
 end

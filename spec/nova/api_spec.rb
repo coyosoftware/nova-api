@@ -18,4 +18,10 @@ RSpec.describe Nova::API do
       expect(Nova::API::Client.new.apportionments).to eq(Nova::API::Resource::Apportionment)
     end
   end
+
+  describe "#apportionment_values" do
+    it 'returns the Nova::API::Resource::ApportionmentValue class' do
+      expect(Nova::API::Client.new.apportionment_values).to eq(Nova::API::Resource::ApportionmentValue)
+    end
+  end
 end
