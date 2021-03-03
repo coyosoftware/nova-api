@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2021-03-03
+
 ### Added
 
 - Financial account related stuff
@@ -21,5 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Apportionment related stuff
 
-[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.1.1...HEAD
+[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.2.0
 [0.1.1]: https://github.com/coyosoftware/nova-api/releases/tag/0.1.1
