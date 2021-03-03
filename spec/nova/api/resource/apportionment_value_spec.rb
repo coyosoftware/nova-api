@@ -85,10 +85,10 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
   end
 
   describe '.update' do
-    context 'when the id is not set' do
-      let(:name) { 'foobar' }
-      let(:parameters) { { name: name } }
+    let(:name) { 'foobar' }
+    let(:parameters) { { name: name } }
 
+    context 'when the id is not set' do
       it 'raises the missing id error' do
         expect { described_class.update(apportionment_id, nil, parameters) }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
       end
@@ -96,8 +96,6 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:name) { 'foobar' }
-      let(:parameters) { { name: name } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
       subject { described_class.update(apportionment_id, id, parameters) }

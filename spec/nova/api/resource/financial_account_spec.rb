@@ -1,4 +1,4 @@
-RSpec.describe Nova::API::Resource::Apportionment do
+RSpec.describe Nova::API::Resource::FinancialAccount do
   before(:all) do
     Nova::API.configure do |config|
       config.subdomain = 'foobar'
@@ -11,39 +11,53 @@ RSpec.describe Nova::API::Resource::Apportionment do
 
     it { is_expected.to have_attribute(:id, Dry::Types['coercible.integer'].optional) }
     it { is_expected.to have_attribute(:name, Dry::Types['coercible.string']) }
-    it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
-    it { is_expected.to have_attribute(:values, Dry::Types['strict.array'].of(Nova::API::Resource::ApportionmentValue).optional) }
+    it { is_expected.to have_attribute(:reason, Dry::Types['coercible.integer'].optional) }
+    it { is_expected.to have_attribute(:financial_account_id, Dry::Types['coercible.integer'].optional) }
+    it { is_expected.to have_attribute(:financial_account, Dry::Types['coercible.string'].optional) }
+    it { is_expected.to have_attribute(:income, Dry::Types['strict.bool'].optional) }
+    it { is_expected.to have_attribute(:outcome, Dry::Types['strict.bool'].optional) }
+    it { is_expected.to have_attribute(:children, Dry::Types['strict.array'].of(Nova::API::Resource::FinancialAccount).optional) }
   end
 
   describe '.endpoint' do
-    it 'returns the apportionment endpoint' do
-      expect(described_class.endpoint).to eq('/api/apportionments')
+    it 'returns the financial account endpoint' do
+      expect(described_class.endpoint).to eq('/api/financial_accounts')
     end
   end
 
   describe '.list' do
-    let(:parameters) { { q: 'foobar' } }
     let(:data) do
       [
-        { id: 99, name: 'abc', active: true, values: [{ id: 99, name: 'cba', active: true, apportionment_id: 99 }, { id: 1, name: 'aaa', active: false, apportionment_id: 99 }] },
-        { id: 1, name: 'foobar', active: false, values: [{ id: 98, name: 'foo', active: false, apportionment_id: 1 }, { id: 2, name: 'bar', active: false, apportionment_id: 1 }] }
+        {
+          'id': 1, 'name': '0 - Ativo', 'reason': 0, 'financial_account_id': nil, 'financial_account': nil, 'income': true, 'outcome': false,
+          'children': [ { 'id': 27, 'name': '0.0 - Caixas', 'reason': 0, 'financial_account_id': 1, 'financial_account': '0 - Ativo', 'income': true, 'outcome': false } ]
+        },
+        {
+          'id': 8, 'name': '3 - Custo', 'reason': 3, 'financial_account_id': nil, 'financial_account': nil, 'income': false, 'outcome': true,
+          'children': [
+            {
+              'id': 9, 'name': '3.0 - Gasto com pessoal', 'reason': 3, 'financial_account_id': 8, 'financial_account': '3 - Custo', 'income': false, 'outcome': true,
+              'children': [ { 'id': 11, 'name': '3.0.0 - Salário', 'reason': 3, 'financial_account_id': 9, 'financial_account': '3.0 - Gasto com pessoal', 'income': false, 'outcome': true } ]
+            }
+          ]
+        }
       ]
     end
     let(:response) do
       double(:response, success?: true, parsed_response: data)
     end
 
-    subject { described_class.list(Nova::API::SearchParams::Apportionment.new parameters) }
+    subject { described_class.list }
 
-    it 'issues a get to the apportionment list endpoint' do
-      expect(described_class).to receive(:get).with(described_class.endpoint, query: parameters, headers: authorization_header).and_return(response)
+    it 'issues a get to the financial account list endpoint' do
+      expect(described_class).to receive(:get).with(described_class.endpoint, headers: authorization_header).and_return(response)
 
       subject
     end
 
     context 'with a successful response' do
       before do
-        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
+        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").
           to_return(status: 200, body: JSON.generate(data))
       end
 
@@ -60,34 +74,50 @@ RSpec.describe Nova::API::Resource::Apportionment do
       it 'returns the records' do
         response = subject
 
-        expect(response.records).to all(be_a(Nova::API::Resource::Apportionment))
+        expect(response.records).to all(be_a(Nova::API::Resource::FinancialAccount))
 
         expect(response.records[0].id).to eq(data[0][:id])
         expect(response.records[0].name).to eq(data[0][:name])
-        expect(response.records[0].active).to eq(data[0][:active])
+        expect(response.records[0].reason).to eq(data[0][:reason])
+        expect(response.records[0].financial_account_id).to eq(data[0][:financial_account_id])
+        expect(response.records[0].financial_account).to eq(data[0][:financial_account])
+        expect(response.records[0].income).to eq(data[0][:income])
+        expect(response.records[0].outcome).to eq(data[0][:outcome])
+        expect(response.records[0].children).to all(be_a(Nova::API::Resource::FinancialAccount))
 
-        expect(response.records[0].values).to all(be_a(Nova::API::Resource::ApportionmentValue))
-
-        expect(response.records[0].values[0].id).to eq(data[0][:values][0][:id])
-        expect(response.records[0].values[0].name).to eq(data[0][:values][0][:name])
-        expect(response.records[0].values[0].active).to eq(data[0][:values][0][:active])
-        expect(response.records[0].values[0].apportionment_id).to eq(data[0][:values][0][:apportionment_id])
-        expect(response.records[0].values[1].id).to eq(data[0][:values][1][:id])
-        expect(response.records[0].values[1].name).to eq(data[0][:values][1][:name])
-        expect(response.records[0].values[1].active).to eq(data[0][:values][1][:active])
-        expect(response.records[0].values[1].apportionment_id).to eq(data[0][:values][1][:apportionment_id])
+        expect(response.records[0].children[0].id).to eq(data[0][:children][0][:id])
+        expect(response.records[0].children[0].name).to eq(data[0][:children][0][:name])
+        expect(response.records[0].children[0].reason).to eq(data[0][:children][0][:reason])
+        expect(response.records[0].children[0].financial_account_id).to eq(data[0][:children][0][:financial_account_id])
+        expect(response.records[0].children[0].financial_account).to eq(data[0][:children][0][:financial_account])
+        expect(response.records[0].children[0].income).to eq(data[0][:children][0][:income])
+        expect(response.records[0].children[0].outcome).to eq(data[0][:children][0][:outcome])
 
         expect(response.records[1].id).to eq(data[1][:id])
         expect(response.records[1].name).to eq(data[1][:name])
-        expect(response.records[1].active).to eq(data[1][:active])
-        expect(response.records[1].values[0].id).to eq(data[1][:values][0][:id])
-        expect(response.records[1].values[0].name).to eq(data[1][:values][0][:name])
-        expect(response.records[1].values[0].active).to eq(data[1][:values][0][:active])
-        expect(response.records[1].values[0].apportionment_id).to eq(data[1][:values][0][:apportionment_id])
-        expect(response.records[1].values[1].id).to eq(data[1][:values][1][:id])
-        expect(response.records[1].values[1].name).to eq(data[1][:values][1][:name])
-        expect(response.records[1].values[1].active).to eq(data[1][:values][1][:active])
-        expect(response.records[1].values[1].apportionment_id).to eq(data[1][:values][1][:apportionment_id])
+        expect(response.records[1].reason).to eq(data[1][:reason])
+        expect(response.records[1].financial_account_id).to eq(data[1][:financial_account_id])
+        expect(response.records[1].financial_account).to eq(data[1][:financial_account])
+        expect(response.records[1].income).to eq(data[1][:income])
+        expect(response.records[1].outcome).to eq(data[1][:outcome])
+        expect(response.records[1].children).to all(be_a(Nova::API::Resource::FinancialAccount))
+
+        expect(response.records[1].children[0].id).to eq(data[1][:children][0][:id])
+        expect(response.records[1].children[0].name).to eq(data[1][:children][0][:name])
+        expect(response.records[1].children[0].reason).to eq(data[1][:children][0][:reason])
+        expect(response.records[1].children[0].financial_account_id).to eq(data[1][:children][0][:financial_account_id])
+        expect(response.records[1].children[0].financial_account).to eq(data[1][:children][0][:financial_account])
+        expect(response.records[1].children[0].income).to eq(data[1][:children][0][:income])
+        expect(response.records[1].children[0].outcome).to eq(data[1][:children][0][:outcome])
+
+        expect(response.records[1].children[0].children).to all(be_a(Nova::API::Resource::FinancialAccount))
+        expect(response.records[1].children[0].children[0].id).to eq(data[1][:children][0][:children][0][:id])
+        expect(response.records[1].children[0].children[0].name).to eq(data[1][:children][0][:children][0][:name])
+        expect(response.records[1].children[0].children[0].reason).to eq(data[1][:children][0][:children][0][:reason])
+        expect(response.records[1].children[0].children[0].financial_account_id).to eq(data[1][:children][0][:children][0][:financial_account_id])
+        expect(response.records[1].children[0].children[0].financial_account).to eq(data[1][:children][0][:children][0][:financial_account])
+        expect(response.records[1].children[0].children[0].income).to eq(data[1][:children][0][:children][0][:income])
+        expect(response.records[1].children[0].children[0].outcome).to eq(data[1][:children][0][:children][0][:outcome])
       end
     end
 
@@ -95,7 +125,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
       let(:errors) { ['foo', 'bar'] }
 
       before do
-        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
+        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").
           to_return(status: 400, body: JSON.generate({ errors: errors }))
       end
 
@@ -103,7 +133,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         expect(subject).to be_a(Nova::API::ListResponse)
       end
 
-      it 'returns the apportionment with its errors' do
+      it 'returns the financial account with its errors' do
         response = subject
 
         expect(response.records).to be_nil
@@ -113,13 +143,14 @@ RSpec.describe Nova::API::Resource::Apportionment do
   end
 
   describe '.create' do
+    let(:financial_account_id) { 10 }
     let(:name) { 'foobar' }
-    let(:parameters) { { name: name } }
+    let(:parameters) { { name: name, financial_account_id: financial_account_id } }
     let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
     subject { described_class.create(parameters) }
 
-    it 'issues a post to the apportionment create endpoint' do
+    it 'issues a post to the financial account create endpoint' do
       expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
 
       subject
@@ -143,7 +174,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         expect(response.errors).to be_empty
       end
 
-      it 'returns the created apportionment' do
+      it 'returns the created financial account' do
         response = subject
 
         expect(response.record).to be_a(described_class)
@@ -164,7 +195,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
         expect(subject).to be_a(Nova::API::Response)
       end
 
-      it 'returns the apportionment with its errors' do
+      it 'returns the financial account with its errors' do
         response = subject
 
         expect(response.record).to be_a(described_class)
@@ -174,8 +205,9 @@ RSpec.describe Nova::API::Resource::Apportionment do
   end
 
   describe '.update' do
+    let(:financial_account_id) { 10 }
     let(:name) { 'foobar' }
-    let(:parameters) { { name: name } }
+    let(:parameters) { { financial_account_id: financial_account_id, name: name } }
 
     context 'when the id is not set' do
       it 'raises the missing id error' do
@@ -189,8 +221,8 @@ RSpec.describe Nova::API::Resource::Apportionment do
 
       subject { described_class.update(id, parameters) }
 
-      it 'issues a patch to the apportionment update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
+      it 'issues a patch to the financial account update endpoint' do
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { financial_account_id: financial_account_id, name: name }, headers: authorization_header).and_return(response)
 
         subject
       end
@@ -211,7 +243,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(response.errors).to be_empty
         end
 
-        it 'returns the created apportionment' do
+        it 'returns the created financial account' do
           response = subject
 
           expect(response.record).to be_a(described_class)
@@ -232,7 +264,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(subject).to be_a(Nova::API::Response)
         end
 
-        it 'returns the apportionment with its errors' do
+        it 'returns the financial account with its errors' do
           response = subject
 
           expect(response.record).to be_a(described_class)
@@ -257,7 +289,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
 
       subject { described_class.destroy(id) }
 
-      it 'issues a delete to the apportionment delete endpoint' do
+      it 'issues a delete to the financial account delete endpoint' do
         expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
 
         subject
@@ -305,90 +337,29 @@ RSpec.describe Nova::API::Resource::Apportionment do
     end
   end
 
-  describe '.reactivate' do
-    context 'when the id is not set' do
-      subject { described_class.reactivate(nil) }
-
-      it 'raises the missing id error' do
-        expect { subject }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
-      end
-    end
-
-    context 'when the id is set' do
-      let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
-
-      subject { described_class.reactivate(id) }
-
-      it 'issues a patch to the apportionment reactivate endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}/reactivate", headers: authorization_header).and_return(response)
-
-        subject
-      end
-
-      context 'with a successful response' do
-        before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
-            to_return(status: 200, body: nil)
-        end
-
-        it 'returns the response object' do
-          expect(subject).to be_a(Nova::API::Response)
-        end
-
-        it 'returns no error' do
-          expect(subject.errors).to be_empty
-        end
-
-        it 'returns no record' do
-          expect(subject.record).to be_nil
-        end
-      end
-
-      context 'with an error response' do
-        let(:errors) { ['foo', 'bar'] }
-
-        before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
-        end
-
-        it 'returns the response object' do
-          expect(subject).to be_a(Nova::API::Response)
-        end
-
-        it 'returns the errors' do
-          expect(subject.errors).to match_array(errors)
-        end
-
-        it 'returns no record' do
-          expect(subject.record).to be_nil
-        end
-      end
-    end
-  end
-
   describe '#endpoint' do
     let(:id) { 99 }
+    let(:financial_account_id) { 10 }
     let(:name) { 'foobar' }
-    let(:parameters) { { name: name, id: id } }
+    let(:parameters) { { financial_account_id: financial_account_id, name: name, id: id } }
 
     subject { described_class.new(parameters) }
 
-    it 'returns the apportionment endpoint' do
-      expect(subject.endpoint).to eq("/api/apportionments/#{id}")
+    it 'returns the financial account endpoint' do
+      expect(subject.endpoint).to eq("/api/financial_accounts/#{id}")
     end
   end
 
   describe '#save' do
     context 'when the id is not set' do
+      let(:financial_account_id) { 10 }
       let(:name) { 'foobar' }
-      let(:parameters) { { name: name } }
+      let(:parameters) { { financial_account_id: financial_account_id, name: name } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
       subject { described_class.new(parameters) }
 
-      it 'issues a post to the apportionment create endpoint' do
+      it 'issues a post to the financial account create endpoint' do
         expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
 
         subject.save
@@ -412,7 +383,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(response.errors).to be_empty
         end
 
-        it 'returns the created apportionment' do
+        it 'returns the created financial account' do
           response = subject.save
 
           expect(response.record).to be_a(described_class)
@@ -433,7 +404,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(subject.save).to be_a(Nova::API::Response)
         end
 
-        it 'returns the apportionment with its errors' do
+        it 'returns the financial account with its errors' do
           response = subject.save
 
           expect(response.record).to be_a(described_class)
@@ -445,13 +416,14 @@ RSpec.describe Nova::API::Resource::Apportionment do
     context 'when the id is set' do
       let(:id) { 99 }
       let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
+      let(:financial_account_id) { 10 }
+      let(:parameters) { { id: id, financial_account_id: financial_account_id, name: name } }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
       subject { described_class.new(parameters) }
 
-      it 'issues a patch to the apportionment update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
+      it 'issues a patch to the financial account update endpoint' do
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { financial_account_id: financial_account_id, name: name }, headers: authorization_header).and_return(response)
 
         subject.save
       end
@@ -472,7 +444,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(response.errors).to be_empty
         end
 
-        it 'returns the created apportionment' do
+        it 'returns the created financial account' do
           response = subject.save
 
           expect(response.record).to be_a(described_class)
@@ -493,7 +465,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(subject.save).to be_a(Nova::API::Response)
         end
 
-        it 'returns the apportionment with its errors' do
+        it 'returns the financial account with its errors' do
           response = subject.save
 
           expect(response.record).to be_a(described_class)
@@ -506,7 +478,8 @@ RSpec.describe Nova::API::Resource::Apportionment do
   describe '#update' do
     context 'when the id is not set' do
       let(:name) { 'foobar' }
-      let(:parameters) { { name: name } }
+      let(:financial_account_id) { 10 }
+      let(:parameters) { { financial_account_id: financial_account_id, name: name } }
 
       subject { described_class.new(parameters) }
 
@@ -518,13 +491,14 @@ RSpec.describe Nova::API::Resource::Apportionment do
     context 'when the id is set' do
       let(:id) { 99 }
       let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
+      let(:financial_account_id) { 10 }
+      let(:parameters) { { id: id, financial_account_id: financial_account_id, name: name } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
       subject { described_class.new(parameters) }
 
-      it 'issues a patch to the apportionment update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { name: name }, headers: authorization_header).and_return(response)
+      it 'issues a patch to the financial account update endpoint' do
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { financial_account_id: financial_account_id, name: name }, headers: authorization_header).and_return(response)
 
         subject.update
       end
@@ -545,7 +519,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(response.errors).to be_empty
         end
 
-        it 'returns the created apportionment' do
+        it 'returns the created financial account' do
           response = subject.update
 
           expect(response.record).to be_a(described_class)
@@ -566,7 +540,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
           expect(subject.update).to be_a(Nova::API::Response)
         end
 
-        it 'returns the apportionment with its errors' do
+        it 'returns the financial account with its errors' do
           response = subject.update
 
           expect(response.record).to be_a(described_class)
@@ -596,7 +570,7 @@ RSpec.describe Nova::API::Resource::Apportionment do
 
       subject { described_class.new(parameters) }
 
-      it 'issues a delete to the apportionment delete endpoint' do
+      it 'issues a delete to the financial account delete endpoint' do
         expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
 
         subject.destroy
@@ -645,82 +619,6 @@ RSpec.describe Nova::API::Resource::Apportionment do
 
         it 'returns no record' do
           response = subject.destroy
-
-          expect(response.record).to be_nil
-        end
-      end
-    end
-  end
-
-  describe '#reactivate' do
-    context 'when the id is not set' do
-      let(:name) { 'foobar' }
-      let(:parameters) { { name: name } }
-      
-      subject { described_class.new(parameters) }
-
-      it 'raises the missing id error' do
-        expect { subject.reactivate }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
-      end
-    end
-
-    context 'when the id is set' do
-      let(:id) { 99 }
-      let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
-
-      subject { described_class.new(parameters) }
-
-      it 'issues a patch to the apportionment reactivate endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}/reactivate", headers: authorization_header).and_return(response)
-
-        subject.reactivate
-      end
-
-      context 'with a successful response' do
-        before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
-            to_return(status: 200, body: nil)
-        end
-
-        it 'returns the response object' do
-          expect(subject.reactivate).to be_a(Nova::API::Response)
-        end
-
-        it 'returns no error' do
-          response = subject.reactivate
-
-          expect(response.errors).to be_empty
-        end
-
-        it 'returns no record' do
-          response = subject.reactivate
-
-          expect(response.record).to be_nil
-        end
-      end
-
-      context 'with an error response' do
-        let(:errors) { ['foo', 'bar'] }
-
-        before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/reactivate").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
-        end
-
-        it 'returns the response object' do
-          expect(subject.reactivate).to be_a(Nova::API::Response)
-        end
-
-        it 'returns the errors' do
-          response = subject.reactivate
-
-          expect(response.errors).to match_array(errors)
-        end
-
-        it 'returns no record' do
-          response = subject.reactivate
 
           expect(response.record).to be_nil
         end

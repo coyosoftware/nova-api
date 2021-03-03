@@ -47,7 +47,12 @@ module Nova
       def self.do_get_search(endpoint, query, headers = {})
         set_base_uri
 
-        response = self.get(endpoint, query: query, headers: headers.merge(authorization_header))
+        response =
+          if query
+            self.get(endpoint, query: query, headers: headers.merge(authorization_header))
+          else
+            self.get(endpoint, headers: headers.merge(authorization_header))
+          end
 
         Nova::API::ListResponse.build(response, self)
       end

@@ -24,4 +24,10 @@ RSpec.describe Nova::API do
       expect(Nova::API::Client.new.apportionment_values).to eq(Nova::API::Resource::ApportionmentValue)
     end
   end
+
+  describe "#financial_accounts" do
+    it 'returns the Nova::API::Resource::FinancialAccount class' do
+      expect(Nova::API::Client.new.financial_accounts).to eq(Nova::API::Resource::FinancialAccount)
+    end
+  end
 end
