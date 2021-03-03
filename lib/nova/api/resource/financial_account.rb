@@ -21,6 +21,18 @@ module Nova
           do_get_search(endpoint, nil)
         end
 
+        def self.income_accounts
+          do_get_search("#{endpoint}/income_accounts", nil)
+        end
+
+        def self.payable_accounts
+          do_get_search("#{endpoint}/payable_accounts", nil)
+        end
+
+        def self.receivable_accounts
+          do_get_search("#{endpoint}/receivable_accounts", nil)
+        end
+
         def self.create(parameters)
           model = new parameters
 
