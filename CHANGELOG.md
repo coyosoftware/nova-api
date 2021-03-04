@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-03-04
+
+### Added
+
+- Third party related stuff
+
 ## [0.2.0] - 2021-03-03
 
 ### Added
@@ -23,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Apportionment related stuff
 
-[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.2.0...HEAD
+[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.3.0
 [0.2.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.2.0
 [0.1.1]: https://github.com/coyosoftware/nova-api/releases/tag/0.1.1

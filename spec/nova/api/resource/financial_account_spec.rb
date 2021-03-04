@@ -29,23 +29,21 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     let(:data) do
       [
         {
-          'id': 1, 'name': '0 - Ativo', 'reason': 0, 'financial_account_id': nil, 'financial_account': nil, 'income': true, 'outcome': false,
-          'children': [ { 'id': 27, 'name': '0.0 - Caixas', 'reason': 0, 'financial_account_id': 1, 'financial_account': '0 - Ativo', 'income': true, 'outcome': false } ]
+          id: 1, name: '0 - Ativo', reason: 0, financial_account_id: nil, financial_account: nil, income: true, outcome: false,
+          children: [ { id: 27, name: '0.0 - Caixas', reason: 0, financial_account_id: 1, financial_account: '0 - Ativo', income: true, outcome: false } ]
         },
         {
-          'id': 8, 'name': '3 - Custo', 'reason': 3, 'financial_account_id': nil, 'financial_account': nil, 'income': false, 'outcome': true,
-          'children': [
+          id: 8, name: '3 - Custo', reason: 3, financial_account_id: nil, financial_account: nil, income: false, outcome: true,
+          children: [
             {
-              'id': 9, 'name': '3.0 - Gasto com pessoal', 'reason': 3, 'financial_account_id': 8, 'financial_account': '3 - Custo', 'income': false, 'outcome': true,
-              'children': [ { 'id': 11, 'name': '3.0.0 - Salário', 'reason': 3, 'financial_account_id': 9, 'financial_account': '3.0 - Gasto com pessoal', 'income': false, 'outcome': true } ]
+              id: 9, name: '3.0 - Gasto com pessoal', reason: 3, financial_account_id: 8, financial_account: '3 - Custo', income: false, outcome: true,
+              children: [ { id: 11, name: '3.0.0 - Salário', reason: 3, financial_account_id: 9, financial_account: '3.0 - Gasto com pessoal', income: false, outcome: true } ]
             }
           ]
         }
       ]
     end
-    let(:response) do
-      double(:response, success?: true, parsed_response: data)
-    end
+    let(:response) { double(:response, success?: true, parsed_response: data) }
 
     subject { described_class.list }
 
@@ -133,7 +131,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         expect(subject).to be_a(Nova::API::ListResponse)
       end
 
-      it 'returns the financial account with its errors' do
+      it 'returns the errors' do
         response = subject
 
         expect(response.records).to be_nil
@@ -146,23 +144,21 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     let(:data) do
       [
         {
-          'id': 3, 'name': '2 - Receita', 'reason': 2, 'financial_account_id': nil, 'financial_account': nil, 'income': true, 'outcome': false,
-          'children': [ { 'id': 4, 'name': '2.0 - Receita privado', 'reason': 2, 'financial_account_id': 3, 'financial_account': '2 - Receita', 'income': true, 'outcome': false } ]
+          id: 3, name: '2 - Receita', reason: 2, financial_account_id: nil, financial_account: nil, income: true, outcome: false,
+          children: [ { id: 4, name: '2.0 - Receita privado', reason: 2, financial_account_id: 3, financial_account: '2 - Receita', income: true, outcome: false } ]
         },
         {
-          'id': 8, 'name': '3 - Custo', 'reason': 3, 'financial_account_id': nil, 'financial_account': nil, 'income': false, 'outcome': true,
-          'children': [
+          id: 8, name: '3 - Custo', reason: 3, financial_account_id: nil, financial_account: nil, income: false, outcome: true,
+          children: [
             {
-              'id': 9, 'name': '3.0 - Gasto com pessoal', 'reason': 3, 'financial_account_id': 8, 'financial_account': '3 - Custo', 'income': false, 'outcome': true,
-              'children': [ { 'id': 11, 'name': '3.0.0 - Salário', 'reason': 3, 'financial_account_id': 9, 'financial_account': '3.0 - Gasto com pessoal', 'income': false, 'outcome': true } ]
+              id: 9, name: '3.0 - Gasto com pessoal', reason: 3, financial_account_id: 8, financial_account: '3 - Custo', income: false, outcome: true,
+              children: [ { id: 11, name: '3.0.0 - Salário', reason: 3, financial_account_id: 9, financial_account: '3.0 - Gasto com pessoal', income: false, outcome: true } ]
             }
           ]
         }
       ]
     end
-    let(:response) do
-      double(:response, success?: true, parsed_response: data)
-    end
+    let(:response) { double(:response, success?: true, parsed_response: data) }
 
     subject { described_class.income_accounts }
 
@@ -250,7 +246,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         expect(subject).to be_a(Nova::API::ListResponse)
       end
 
-      it 'returns the financial account with its errors' do
+      it 'returns the errors' do
         response = subject
 
         expect(response.records).to be_nil
@@ -263,28 +259,26 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     let(:data) do
       [
         {
-          'id': 8, 'name': '3 - Custo', 'reason': 3, 'financial_account_id': nil, 'financial_account': nil, 'income': false, 'outcome': true,
-          'children': [
+          id: 8, name: '3 - Custo', reason: 3, financial_account_id: nil, financial_account: nil, income: false, outcome: true,
+          children: [
             {
-              'id': 9, 'name': '3.0 - Gasto com pessoal', 'reason': 3, 'financial_account_id': 8, 'financial_account': '3 - Custo', 'income': false, 'outcome': true,
-              'children': [ { 'id': 11, 'name': '3.0.0 - Salário', 'reason': 3, 'financial_account_id': 9, 'financial_account': '3.0 - Gasto com pessoal', 'income': false, 'outcome': true } ]
+              id: 9, name: '3.0 - Gasto com pessoal', reason: 3, financial_account_id: 8, financial_account: '3 - Custo', income: false, outcome: true,
+              children: [ { id: 11, name: '3.0.0 - Salário', reason: 3, financial_account_id: 9, financial_account: '3.0 - Gasto com pessoal', income: false, outcome: true } ]
             }
           ]
         },
         {
-          'id': 23, 'name': '4 - Despesa', 'reason': 4, 'financial_account_id': nil, 'financial_account': nil, 'income': false, 'outcome': true,
-          'children': [
+          id: 23, name: '4 - Despesa', reason: 4, financial_account_id: nil, financial_account: nil, income: false, outcome: true,
+          children: [
             {
-              'id': 24, 'name': '4.0 - Despesas financeiras', 'reason': 4, 'financial_account_id': 23, 'financial_account': '4 - Despesa', 'income': false, 'outcome': true,
-              'children': [ { 'id': 25, 'name': '4.0.0 - Taxas', 'reason': 4, 'financial_account_id': 24, 'financial_account': '4.0 - Despesas financeiras', 'income': false, 'outcome': true } ]
+              id: 24, name: '4.0 - Despesas financeiras', reason: 4, financial_account_id: 23, financial_account: '4 - Despesa', income: false, outcome: true,
+              children: [ { id: 25, name: '4.0.0 - Taxas', reason: 4, financial_account_id: 24, financial_account: '4.0 - Despesas financeiras', income: false, outcome: true } ]
             }
           ]
         }
       ]
     end
-    let(:response) do
-      double(:response, success?: true, parsed_response: data)
-    end
+    let(:response) { double(:response, success?: true, parsed_response: data) }
 
     subject { described_class.payable_accounts }
 
@@ -381,7 +375,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         expect(subject).to be_a(Nova::API::ListResponse)
       end
 
-      it 'returns the financial account with its errors' do
+      it 'returns the errors' do
         response = subject
 
         expect(response.records).to be_nil
@@ -394,18 +388,16 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     let(:data) do
       [
         {
-          'id': 3, 'name': '2 - Receita', 'reason': 2, 'financial_account_id': nil, 'financial_account': nil, 'income': true, 'outcome': false,
-          'children': [
+          id: 3, name: '2 - Receita', reason: 2, financial_account_id: nil, financial_account: nil, income: true, outcome: false,
+          children: [
             {
-              'id': 4, 'name': '2.0 - Receita privado', 'reason': 2, 'financial_account_id': 3, 'financial_account': '2 - Receita', 'income': true, 'outcome': false
+              id: 4, name: '2.0 - Receita privado', reason: 2, financial_account_id: 3, financial_account: '2 - Receita', income: true, outcome: false
             }
           ]
         }
       ]
     end
-    let(:response) do
-      double(:response, success?: true, parsed_response: data)
-    end
+    let(:response) { double(:response, success?: true, parsed_response: data) }
 
     subject { described_class.receivable_accounts }
 
@@ -467,7 +459,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         expect(subject).to be_a(Nova::API::ListResponse)
       end
 
-      it 'returns the financial account with its errors' do
+      it 'returns the errors' do
         response = subject
 
         expect(response.records).to be_nil
@@ -556,7 +548,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
       subject { described_class.update(id, parameters) }
 
       it 'issues a patch to the financial account update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { financial_account_id: financial_account_id, name: name }, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
 
         subject
       end
@@ -577,7 +569,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
           expect(response.errors).to be_empty
         end
 
-        it 'returns the created financial account' do
+        it 'returns the updated financial account' do
           response = subject
 
           expect(response.record).to be_a(described_class)
@@ -685,10 +677,11 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
   end
 
   describe '#save' do
+    let(:financial_account_id) { 10 }
+    let(:name) { 'foobar' }
+    let(:parameters) { { financial_account_id: financial_account_id, name: name } }
+
     context 'when the id is not set' do
-      let(:financial_account_id) { 10 }
-      let(:name) { 'foobar' }
-      let(:parameters) { { financial_account_id: financial_account_id, name: name } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
       subject { described_class.new(parameters) }
@@ -749,15 +742,12 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:name) { 'foobar' }
-      let(:financial_account_id) { 10 }
-      let(:parameters) { { id: id, financial_account_id: financial_account_id, name: name } }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
-      subject { described_class.new(parameters) }
+      subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a patch to the financial account update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { financial_account_id: financial_account_id, name: name }, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
 
         subject.save
       end
@@ -778,7 +768,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
           expect(response.errors).to be_empty
         end
 
-        it 'returns the created financial account' do
+        it 'returns the updated financial account' do
           response = subject.save
 
           expect(response.record).to be_a(described_class)
@@ -810,11 +800,11 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
   end
 
   describe '#update' do
-    context 'when the id is not set' do
-      let(:name) { 'foobar' }
-      let(:financial_account_id) { 10 }
-      let(:parameters) { { financial_account_id: financial_account_id, name: name } }
+    let(:name) { 'foobar' }
+    let(:financial_account_id) { 10 }
+    let(:parameters) { { financial_account_id: financial_account_id, name: name } }
 
+    context 'when the id is not set' do
       subject { described_class.new(parameters) }
 
       it 'raises the missing id error' do
@@ -824,15 +814,12 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:name) { 'foobar' }
-      let(:financial_account_id) { 10 }
-      let(:parameters) { { id: id, financial_account_id: financial_account_id, name: name } }
       let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
 
-      subject { described_class.new(parameters) }
+      subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a patch to the financial account update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: { financial_account_id: financial_account_id, name: name }, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
 
         subject.update
       end
@@ -853,7 +840,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
           expect(response.errors).to be_empty
         end
 
-        it 'returns the created financial account' do
+        it 'returns the updated financial account' do
           response = subject.update
 
           expect(response.record).to be_a(described_class)
@@ -885,10 +872,10 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
   end
 
   describe '#destroy' do
+    let(:name) { 'foobar' }
+    let(:parameters) { { name: name } }
+
     context 'when the id is not set' do
-      let(:name) { 'foobar' }
-      let(:parameters) { { name: name } }
-      
       subject { described_class.new(parameters) }
 
       it 'raises the missing id error' do
@@ -898,11 +885,9 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:name) { 'foobar' }
-      let(:parameters) { { id: id, name: name } }
       let(:response) { double(:response, success?: true, parsed_response: nil) }
 
-      subject { described_class.new(parameters) }
+      subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a delete to the financial account delete endpoint' do
         expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)

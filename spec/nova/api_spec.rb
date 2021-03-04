@@ -30,4 +30,10 @@ RSpec.describe Nova::API do
       expect(Nova::API::Client.new.financial_accounts).to eq(Nova::API::Resource::FinancialAccount)
     end
   end
+
+  describe "#third_parties" do
+    it 'returns the Nova::API::Resource::ThirdParty class' do
+      expect(Nova::API::Client.new.third_parties).to eq(Nova::API::Resource::ThirdParty)
+    end
+  end
 end

@@ -9,8 +9,10 @@ require "nova/api/response"
 require "nova/api/resource/apportionment_value"
 require "nova/api/resource/apportionment"
 require "nova/api/resource/financial_account"
+require "nova/api/resource/third_party"
 
 require "nova/api/search_params/apportionment"
+require "nova/api/search_params/third_party"
 
 module Nova
   module API
@@ -40,6 +42,10 @@ module Nova
 
       def financial_accounts
         Nova::API::Resource::FinancialAccount
+      end
+
+      def third_parties
+        Nova::API::Resource::ThirdParty
       end
     end
   end
