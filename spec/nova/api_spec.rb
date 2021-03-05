@@ -25,6 +25,36 @@ RSpec.describe Nova::API do
     end
   end
 
+  describe "#banks" do
+    it 'returns the Nova::API::Resource::Bank class' do
+      expect(Nova::API::Client.new.banks).to eq(Nova::API::Resource::Bank)
+    end
+  end
+
+  describe "#cards" do
+    it 'returns the Nova::API::Resource::Card class' do
+      expect(Nova::API::Client.new.cards).to eq(Nova::API::Resource::Card)
+    end
+  end
+
+  describe "#cashes" do
+    it 'returns the Nova::API::Resource::Cash class' do
+      expect(Nova::API::Client.new.cashes).to eq(Nova::API::Resource::Cash)
+    end
+  end
+
+  describe "#companies" do
+    it 'returns the Nova::API::Resource::Company class' do
+      expect(Nova::API::Client.new.companies).to eq(Nova::API::Resource::Company)
+    end
+  end
+
+  describe "#current_assets" do
+    it 'returns the Nova::API::Resource::CurrentAsset class' do
+      expect(Nova::API::Client.new.current_assets).to eq(Nova::API::Resource::CurrentAsset)
+    end
+  end
+
   describe "#financial_accounts" do
     it 'returns the Nova::API::Resource::FinancialAccount class' do
       expect(Nova::API::Client.new.financial_accounts).to eq(Nova::API::Resource::FinancialAccount)

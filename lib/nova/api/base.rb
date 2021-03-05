@@ -44,48 +44,48 @@ module Nova
         klass.new(Hash[*data.flatten].merge(id: id))
       end
 
-      def self.do_get_search(endpoint, query, headers = {})
-        set_base_uri
+      def self.do_get_search(endpoint, query, object = self)
+        response = perform_get(endpoint, query, headers)
 
-        response =
-          if query
-            self.get(endpoint, query: query, headers: headers.merge(authorization_header))
-          else
-            self.get(endpoint, headers: headers.merge(authorization_header))
-          end
-
-        Nova::API::ListResponse.build(response, self)
+        Nova::API::ListResponse.build(response, object)
       end
 
-      def do_delete(endpoint, headers = {})
+      def self.do_get(endpoint, query, object = self)
+        response = perform_get(endpoint, query, headers)
+
+        Nova::API::Response.build(response, object)
+      end
+      def_delegator self, :do_get
+
+      def do_delete(endpoint)
         set_base_uri
 
-        response = self.class.delete(endpoint, headers: headers.merge(authorization_header))
+        response = self.class.delete(endpoint, headers: authorization_header)
 
         Nova::API::Response.build(response)
       end
 
-      def do_patch(endpoint, data, headers = {})
+      def do_patch(endpoint, data)
         set_base_uri
 
         if data.nil? || data.empty?
-          response = self.class.patch(endpoint, headers: headers.merge(authorization_header))
+          response = self.class.patch(endpoint, headers: authorization_header)
 
           Nova::API::Response.build(response)
         else
           payload = data.dup
           payload.delete(:id)
 
-          response = self.class.patch(endpoint, body: payload, headers: headers.merge(authorization_header))
+          response = self.class.patch(endpoint, body: payload, headers: authorization_header)
 
           Nova::API::Response.build(response, self)
         end
       end
 
-      def do_post(endpoint, data, headers = {})
+      def do_post(endpoint, data)
         set_base_uri
 
-        response = self.class.post(endpoint, body: data, headers: headers.merge(authorization_header))
+        response = self.class.post(endpoint, body: data, headers: authorization_header)
 
         Nova::API::Response.build(response, self)
       end
@@ -95,6 +95,17 @@ module Nova
       end
 
       private
+
+      def self.perform_get(endpoint, query, headers = {})
+        set_base_uri
+
+        response =
+          if query
+            self.get(endpoint, query: query, headers: headers.merge(authorization_header))
+          else
+            self.get(endpoint, headers: headers.merge(authorization_header))
+          end
+      end
 
       def self.authorization_header
         { 'Persistent-Token': configuration.api_key }

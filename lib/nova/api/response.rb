@@ -21,7 +21,7 @@ module Nova
         errors ||= []
 
         if object
-          record = object.id.nil? ? object.class.new(object.attributes.merge(id: parsed_response['id'])) : object
+          record = object.class.new(object.attributes.merge(parsed_response))
         end
 
         new(success: success, errors: errors, record: record)
