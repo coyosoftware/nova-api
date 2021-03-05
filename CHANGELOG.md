@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2021-03-05
+
 ### Added
 
 - Current asset related stuff (still missing Card Taxes)
+
+### Changed
+
+- The 'with_deleted' flag is now called 'with_inactive'
+
+- The 'deleted' flags are now called 'active'
 
 ## [0.3.0] - 2021-03-04
 

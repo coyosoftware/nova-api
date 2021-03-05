@@ -11,7 +11,7 @@ RSpec.describe Nova::API::Resource::Bank do
 
     it { is_expected.to have_attribute(:id, Dry::Types['coercible.integer'].optional) }
     it { is_expected.to have_attribute(:company, Nova::API::Resource::Company.optional) }
-    it { is_expected.to have_attribute(:deleted, Dry::Types['strict.bool'].optional) }
+    it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
     it { is_expected.to have_attribute(:image, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:balance, Dry::Types['coercible.decimal'].optional) }
 
@@ -41,14 +41,14 @@ RSpec.describe Nova::API::Resource::Bank do
 
   describe '.list' do
     let(:company_id) { 99 }
-    let(:with_deleted) { true }
-    let(:parameters) { { company_id: company_id, with_deleted: with_deleted } }
+    let(:with_inactive) { true }
+    let(:parameters) { { company_id: company_id, with_inactive: with_inactive } }
     let(:data) do
       [
         {
           id: 18, agency: '01413909596380', current_account: '94947502112995',
           company: { id: 6, name: 'Moniz, Velasques e Solimões' },
-          deleted: false,
+          active: true,
           image: 'https://assets.nova.money/images/bank_logos/sicredi.png',
           balance: 0,
           institution: { code: '748', name: 'Sicredi' },
@@ -57,7 +57,7 @@ RSpec.describe Nova::API::Resource::Bank do
         {
           id: 16, agency: '74373006583146', current_account: '49507222165002',
           company: { id: 6, name: 'Moniz, Velasques e Solimões' },
-          deleted: false,
+          active: true,
           image: 'https://assets.nova.money/images/bank_logos/banrisul.png',
           balance: 0,
           institution: { code: '041', name: 'Banrisul' },
@@ -101,7 +101,7 @@ RSpec.describe Nova::API::Resource::Bank do
         expect(response.records[0].current_account).to eq(data[0][:current_account])
         expect(response.records[0].company.id).to eq(data[0][:company][:id])
         expect(response.records[0].company.name).to eq(data[0][:company][:name])
-        expect(response.records[0].deleted).to eq(data[0][:deleted])
+        expect(response.records[0].active).to eq(data[0][:active])
         expect(response.records[0].image).to eq(data[0][:image])
         expect(response.records[0].balance).to eq(data[0][:balance])
         expect(response.records[0].institution.code).to eq(data[0][:institution][:code])
@@ -114,7 +114,7 @@ RSpec.describe Nova::API::Resource::Bank do
         expect(response.records[1].current_account).to eq(data[1][:current_account])
         expect(response.records[1].company.id).to eq(data[1][:company][:id])
         expect(response.records[1].company.name).to eq(data[1][:company][:name])
-        expect(response.records[1].deleted).to eq(data[1][:deleted])
+        expect(response.records[1].active).to eq(data[1][:active])
         expect(response.records[1].image).to eq(data[1][:image])
         expect(response.records[1].balance).to eq(data[1][:balance])
         expect(response.records[1].institution.code).to eq(data[1][:institution][:code])

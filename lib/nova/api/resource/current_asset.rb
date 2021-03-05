@@ -6,7 +6,7 @@ module Nova
 
         attribute? :id, Dry::Types['coercible.integer'].optional
         attribute? :company, Nova::API::Resource::Company.optional
-        attribute? :deleted, Dry::Types['strict.bool'].optional
+        attribute? :active, Dry::Types['strict.bool'].optional
         attribute? :image, Dry::Types['coercible.string'].optional
         attribute? :balance, Dry::Types['coercible.decimal'].optional
 

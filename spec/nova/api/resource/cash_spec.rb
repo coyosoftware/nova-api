@@ -11,7 +11,7 @@ RSpec.describe Nova::API::Resource::Cash do
 
     it { is_expected.to have_attribute(:id, Dry::Types['coercible.integer'].optional) }
     it { is_expected.to have_attribute(:company, Nova::API::Resource::Company.optional) }
-    it { is_expected.to have_attribute(:deleted, Dry::Types['strict.bool'].optional) }
+    it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
     it { is_expected.to have_attribute(:image, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:balance, Dry::Types['coercible.decimal'].optional) }
 
@@ -26,16 +26,16 @@ RSpec.describe Nova::API::Resource::Cash do
 
   describe '.list' do
     let(:company_id) { 99 }
-    let(:with_deleted) { true }
-    let(:parameters) { { company_id: company_id, with_deleted: with_deleted } }
+    let(:with_inactive) { true }
+    let(:parameters) { { company_id: company_id, with_inactive: with_inactive } }
     let(:data) do
       [
         {
-          id: 18, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, deleted: false, description: 'Antunes Comércio',
+          id: 18, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, active: true, description: 'Antunes Comércio',
           image: 'https://assets.nova.money/images/cash.svg', balance: 0
         },
         {
-          id: 22, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, deleted: false, description: 'Castanho-Custódio',
+          id: 22, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, active: true, description: 'Castanho-Custódio',
           image: 'https://assets.nova.money/images/cash.svg', balance: 0
         }
       ]
@@ -74,7 +74,7 @@ RSpec.describe Nova::API::Resource::Cash do
         expect(response.records[0].id).to eq(data[0][:id])
         expect(response.records[0].company.id).to eq(data[0][:company][:id])
         expect(response.records[0].company.name).to eq(data[0][:company][:name])
-        expect(response.records[0].deleted).to eq(data[0][:deleted])
+        expect(response.records[0].active).to eq(data[0][:active])
         expect(response.records[0].image).to eq(data[0][:image])
         expect(response.records[0].balance).to eq(data[0][:balance])
         expect(response.records[0].description).to eq(data[0][:description])
@@ -82,7 +82,7 @@ RSpec.describe Nova::API::Resource::Cash do
         expect(response.records[1].id).to eq(data[1][:id])
         expect(response.records[1].company.id).to eq(data[1][:company][:id])
         expect(response.records[1].company.name).to eq(data[1][:company][:name])
-        expect(response.records[1].deleted).to eq(data[1][:deleted])
+        expect(response.records[1].active).to eq(data[1][:active])
         expect(response.records[1].image).to eq(data[1][:image])
         expect(response.records[1].balance).to eq(data[1][:balance])
         expect(response.records[1].description).to eq(data[1][:description])
