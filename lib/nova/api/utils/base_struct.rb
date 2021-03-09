@@ -19,11 +19,7 @@ module Nova
 
             value = attributes[key]
 
-            if value.is_a? Array
-              data[key.to_sym] = value.map { |attribute| permit_value(key, attribute) }
-            else
-              data[key.to_sym] = permit_value(key, value)
-            end
+            data[key.to_sym] = value.is_a?(Array) ? value.map { |attribute| permit_value(key, attribute) } : permit_value(key, value)
           end
 
           data
