@@ -17,6 +17,18 @@ RSpec.describe Nova::API::Resource::Card do
 
     it { is_expected.to have_attribute(:description, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:institution, Dry::Types['coercible.string'].optional) }
+
+    it { is_expected.to have_attribute(:taxes, Dry::Types['strict.array'].of(Nova::API::Resource::Card::Tax)) }
+
+    context 'taxes' do
+      subject { described_class::Tax }
+
+      it { is_expected.to have_attribute(:percentage, Dry::Types['coercible.decimal']) }
+      it { is_expected.to have_attribute(:fixed, Dry::Types['coercible.decimal']) }
+      it { is_expected.to have_attribute(:type, Dry::Types['coercible.string']) }
+      it { is_expected.to have_attribute(:installments, Dry::Types['coercible.integer']) }
+      it { is_expected.to have_attribute(:days, Dry::Types['coercible.integer']) }
+    end
   end
 
   describe '.endpoint' do
@@ -33,11 +45,21 @@ RSpec.describe Nova::API::Resource::Card do
       [
         {
           id: 18, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, active: true, description: 'Antunes Comércio',
-          image: 'https://assets.nova.money/images/card_logos/mercadopago.png', balance: 0, institution: 'Mercado Pago'
+          image: 'https://assets.nova.money/images/card_logos/mercadopago.png', balance: 0, institution: 'Mercado Pago',
+          taxes: [
+            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Débito', installments: 1, days: 1 },
+            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito à vista', installments: 1, days: 1 },
+            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito parcelado', installments: 2, days: 1 },
+            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito parcelado', installments: 3, days: 1 }
+          ]
         },
         {
           id: 22, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, active: true, description: 'Castanho-Custódio',
-          image: 'https://assets.nova.money/images/card_logos/izettle.png', balance: 0, institution: 'iZettle'
+          image: 'https://assets.nova.money/images/card_logos/izettle.png', balance: 0, institution: 'iZettle',
+          taxes: [
+            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Débito', installments: 1, days: 1 },
+            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito à vista', installments: 1, days: 1 }
+          ]
         }
       ]
     end
@@ -81,6 +103,30 @@ RSpec.describe Nova::API::Resource::Card do
         expect(response.records[0].description).to eq(data[0][:description])
         expect(response.records[0].institution).to eq(data[0][:institution])
 
+        expect(response.records[0].taxes[0].percentage).to eq(data[0][:taxes][0][:percentage])
+        expect(response.records[0].taxes[0].fixed).to eq(data[0][:taxes][0][:fixed])
+        expect(response.records[0].taxes[0].type).to eq(data[0][:taxes][0][:type])
+        expect(response.records[0].taxes[0].installments).to eq(data[0][:taxes][0][:installments])
+        expect(response.records[0].taxes[0].days).to eq(data[0][:taxes][0][:days])
+
+        expect(response.records[0].taxes[1].percentage).to eq(data[0][:taxes][1][:percentage])
+        expect(response.records[0].taxes[1].fixed).to eq(data[0][:taxes][1][:fixed])
+        expect(response.records[0].taxes[1].type).to eq(data[0][:taxes][1][:type])
+        expect(response.records[0].taxes[1].installments).to eq(data[0][:taxes][1][:installments])
+        expect(response.records[0].taxes[1].days).to eq(data[0][:taxes][1][:days])
+
+        expect(response.records[0].taxes[2].percentage).to eq(data[0][:taxes][2][:percentage])
+        expect(response.records[0].taxes[2].fixed).to eq(data[0][:taxes][2][:fixed])
+        expect(response.records[0].taxes[2].type).to eq(data[0][:taxes][2][:type])
+        expect(response.records[0].taxes[2].installments).to eq(data[0][:taxes][2][:installments])
+        expect(response.records[0].taxes[2].days).to eq(data[0][:taxes][2][:days])
+
+        expect(response.records[0].taxes[3].percentage).to eq(data[0][:taxes][3][:percentage])
+        expect(response.records[0].taxes[3].fixed).to eq(data[0][:taxes][3][:fixed])
+        expect(response.records[0].taxes[3].type).to eq(data[0][:taxes][3][:type])
+        expect(response.records[0].taxes[3].installments).to eq(data[0][:taxes][3][:installments])
+        expect(response.records[0].taxes[3].days).to eq(data[0][:taxes][3][:days])
+
         expect(response.records[1].id).to eq(data[1][:id])
         expect(response.records[1].company.id).to eq(data[1][:company][:id])
         expect(response.records[1].company.name).to eq(data[1][:company][:name])
@@ -89,6 +135,18 @@ RSpec.describe Nova::API::Resource::Card do
         expect(response.records[1].balance).to eq(data[1][:balance])
         expect(response.records[1].description).to eq(data[1][:description])
         expect(response.records[1].institution).to eq(data[1][:institution])
+
+        expect(response.records[1].taxes[0].percentage).to eq(data[1][:taxes][0][:percentage])
+        expect(response.records[1].taxes[0].fixed).to eq(data[1][:taxes][0][:fixed])
+        expect(response.records[1].taxes[0].type).to eq(data[1][:taxes][0][:type])
+        expect(response.records[1].taxes[0].installments).to eq(data[1][:taxes][0][:installments])
+        expect(response.records[1].taxes[0].days).to eq(data[1][:taxes][0][:days])
+
+        expect(response.records[1].taxes[1].percentage).to eq(data[1][:taxes][1][:percentage])
+        expect(response.records[1].taxes[1].fixed).to eq(data[1][:taxes][1][:fixed])
+        expect(response.records[1].taxes[1].type).to eq(data[1][:taxes][1][:type])
+        expect(response.records[1].taxes[1].installments).to eq(data[1][:taxes][1][:installments])
+        expect(response.records[1].taxes[1].days).to eq(data[1][:taxes][1][:days])
       end
     end
 

@@ -61,6 +61,18 @@ RSpec.describe Nova::API do
     end
   end
 
+  describe "#payables" do
+    it 'returns the Nova::API::Resource::FinancialAccount class' do
+      expect(Nova::API::Client.new.payables).to eq(Nova::API::Resource::Payable)
+    end
+  end
+
+  describe "#receivables" do
+    it 'returns the Nova::API::Resource::FinancialAccount class' do
+      expect(Nova::API::Client.new.receivables).to eq(Nova::API::Resource::Receivable)
+    end
+  end
+
   describe "#third_parties" do
     it 'returns the Nova::API::Resource::ThirdParty class' do
       expect(Nova::API::Client.new.third_parties).to eq(Nova::API::Resource::ThirdParty)

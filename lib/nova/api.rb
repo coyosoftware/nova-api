@@ -10,6 +10,11 @@ require "nova/api/resource/apportionment_value"
 require "nova/api/resource/apportionment"
 require "nova/api/resource/company"
 
+require "nova/api/resource/installment"
+require "nova/api/resource/bill"
+require "nova/api/resource/payable"
+require "nova/api/resource/receivable"
+
 require "nova/api/resource/current_asset"
 require "nova/api/resource/bank"
 require "nova/api/resource/card"
@@ -74,6 +79,14 @@ module Nova
 
       def financial_accounts
         Nova::API::Resource::FinancialAccount
+      end
+
+      def payables
+        Nova::API::Resource::Payable
+      end
+
+      def receivables
+        Nova::API::Resource::Receivable
       end
 
       def third_parties

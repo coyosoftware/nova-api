@@ -2,7 +2,10 @@ module Nova
   module API
     module Resource
       class ThirdParty < Nova::API::Base
-        ALLOWED_ATTRIBUTES = %i[trading_name identification address phone social_reason municipal_inscription state_inscription email notes supplier customer retention whatsapp twitter facebook linkedin google instagram site csll pis cofins irpj values_past]
+        ALLOWED_ATTRIBUTES = %i[
+          trading_name identification address phone social_reason municipal_inscription state_inscription email notes supplier
+          customer retention whatsapp twitter facebook linkedin google instagram site csll pis cofins irpj values_past
+        ]
 
         attribute? :id, Dry::Types['coercible.integer'].optional
         attribute :trading_name, Dry::Types['coercible.string']

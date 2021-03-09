@@ -28,18 +28,18 @@ module Nova
 
       protected
 
-      def allowed_attributes
-        return attributes unless self.class.const_defined?('ALLOWED_ATTRIBUTES')
-
-        data = attributes.dup
-
-        data.keys.each { |key| data.delete(key.to_sym) unless self.class.const_get('ALLOWED_ATTRIBUTES').include?(key.to_sym) }
-
-        data
-      end
-
       def self.initialize_empty_model_with_id(klass, id, additional_attributes = {})
-        data = klass.attribute_names.map { |key| additional_attributes[key] ? [key, additional_attributes[key]] : [key, nil] }
+        data = klass.schema.type.keys.map do |field|
+          name = field.name
+
+          if additional_attributes[name]
+            [name, additional_attributes[name]]
+          else
+            type = field.type
+
+            type.optional? ? [name, nil] :  [name, generate_valid_value_for(type)]
+          end
+        end
 
         klass.new(Hash[*data.flatten].merge(id: id))
       end
@@ -121,6 +121,18 @@ module Nova
         base_uri base_url
       end
       def_delegator self, :set_base_uri
+
+      def self.generate_valid_value_for(type)
+        case type.name
+        when Dry::Types['integer'].name, Dry::Types['float'].name, Dry::Types['decimal'].name
+          0
+        when Dry::Types['bool'].name
+          false
+        else
+          nil
+        end
+      end
+      def_delegator self, :generate_valid_value_for
     end
   end
 end

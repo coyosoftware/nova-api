@@ -400,7 +400,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
       subject { described_class.update(id, parameters) }
 
       it 'issues a patch to the third party update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body:parameters, headers: authorization_header).and_return(response)
+        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
 
         subject
       end
