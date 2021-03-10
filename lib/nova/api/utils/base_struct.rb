@@ -19,13 +19,17 @@ module Nova
 
             value = attributes[key]
 
-            data[key.to_sym] = value.is_a?(Array) ? value.map { |attribute| permit_value(key, attribute) } : permit_value(key, value)
+            data[key.to_sym] = extract_value(key, value)
           end
 
           data
         end
 
         private
+
+        def extract_value(key, value)
+          value.is_a?(Array) ? value.map { |attribute| permit_value(key, attribute) } : permit_value(key, value)
+        end
 
         def permit_value(key, value)
           value.respond_to?(:allowed_attributes) ?  value.allowed_attributes : value
