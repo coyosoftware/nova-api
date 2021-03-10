@@ -2,6 +2,17 @@ module Nova
   module API
     module Resource
       class FinancialAccount < Nova::API::Base
+        module REASON
+          ASSET = 0
+          LIABILITY = 1
+          REVENUE = 2
+          COST = 3
+          EXPENSE = 4
+          TRANSIENT = 5
+          INVESTMENT = 6
+          TAXES = 7
+        end
+
         ALLOWED_ATTRIBUTES = %i[financial_account_id name]
 
         attribute? :id, Dry::Types['coercible.integer'].optional

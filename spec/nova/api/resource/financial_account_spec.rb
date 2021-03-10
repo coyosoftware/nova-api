@@ -19,6 +19,42 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     it { is_expected.to have_attribute(:children, Dry::Types['strict.array'].of(Nova::API::Resource::FinancialAccount).optional) }
   end
 
+  describe 'reasons' do
+    subject { described_class::REASON }
+
+    it 'has the asset mapped as 0' do
+      expect(subject::ASSET).to eq(0)
+    end
+
+    it 'has the liability mapped as 1' do
+      expect(subject::LIABILITY).to eq(1)
+    end
+
+    it 'has the revenue mapped as 2' do
+      expect(subject::REVENUE).to eq(2)
+    end
+
+    it 'has the cost mapped as 3' do
+      expect(subject::COST).to eq(3)
+    end
+
+    it 'has the expense mapped as 4' do
+      expect(subject::EXPENSE).to eq(4)
+    end
+
+    it 'has the transient mapped as 5' do
+      expect(subject::TRANSIENT).to eq(5)
+    end
+
+    it 'has the investment mapped as 6' do
+      expect(subject::INVESTMENT).to eq(6)
+    end
+
+    it 'has the taxes mapped as 7' do
+      expect(subject::TAXES).to eq(7)
+    end
+  end
+
   describe '.endpoint' do
     it 'returns the financial account endpoint' do
       expect(described_class.endpoint).to eq('/api/financial_accounts')
