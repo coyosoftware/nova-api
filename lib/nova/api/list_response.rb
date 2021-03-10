@@ -17,7 +17,7 @@ module Nova
         records = nil
 
         if parsed_response.is_a?(Array)
-          records = klass.nil? ? nil : parsed_response.map { |object| klass.new(object) }
+          records = build_records(klass, parsed_response)
         else
           parsed_response = parsed_response.to_h
 
@@ -36,6 +36,10 @@ module Nova
         return unless response.has_key?(field)
 
         response[field].is_a?(Array) ? response[field] : [response[field]]
+      end
+
+      def self.build_records(klass, response)
+        response.map { |object| klass.new(object) } unless klass.nil?
       end
     end
   end

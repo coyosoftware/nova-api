@@ -32,13 +32,7 @@ module Nova
         data = klass.schema.type.keys.map do |field|
           name = field.name
 
-          if additional_attributes[name]
-            [name, additional_attributes[name]]
-          else
-            type = field.type
-
-            type.optional? ? [name, nil] :  [name, generate_valid_value_for(type)]
-          end
+          value_for_field(name, additional_attributes[name], field)
         end
 
         klass.new(Hash[*data.flatten].merge(id: id))
@@ -95,6 +89,14 @@ module Nova
       end
 
       private
+
+      def self.value_for_field(name, override_value, field)
+        return [name, override_value] if override_value
+          
+        type = field.type
+
+        type.optional? ? [name, nil] :  [name, generate_valid_value_for(type)]
+      end
 
       def self.perform_get(endpoint, query, headers = {})
         set_base_uri
