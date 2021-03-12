@@ -11,9 +11,9 @@ RSpec.describe Nova::API::Resource::Installment do
 
     it { is_expected.to have_attribute(:id, Dry::Types['coercible.integer'].optional) }
     it { is_expected.to have_attribute(:due_date, Dry::Types['coercible.string'].constrained(format: described_class::DATE_REGEX)) }
-    it { is_expected.to have_attribute(:gross_value, Dry::Types['coercible.decimal'].optional) }
+    it { is_expected.to have_attribute(:gross_value, Dry::Types['coercible.float'].optional) }
     it { is_expected.to have_attribute(:number, Dry::Types['coercible.integer']) }
-    it { is_expected.to have_attribute(:value, Dry::Types['coercible.decimal']) }
+    it { is_expected.to have_attribute(:value, Dry::Types['coercible.float']) }
   end
 
   describe '.endpoint' do

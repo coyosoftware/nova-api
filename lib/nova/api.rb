@@ -27,6 +27,7 @@ require "nova/api/resource/write_off"
 require "nova/api/resource/response/current_asset_statement"
 
 require "nova/api/search_params/apportionment"
+require "nova/api/search_params/bill"
 require "nova/api/search_params/current_asset"
 require "nova/api/search_params/current_asset_statement"
 require "nova/api/search_params/third_party"

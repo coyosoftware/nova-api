@@ -5,8 +5,8 @@ module Nova
         class Tax < Nova::API::Utils::BaseStruct
           ALLOWED_ATTRIBUTES = %i[]
 
-          attribute :percentage, Dry::Types['coercible.decimal']
-          attribute :fixed, Dry::Types['coercible.decimal']
+          attribute :percentage, Dry::Types['coercible.float']
+          attribute :fixed, Dry::Types['coercible.float']
           attribute :type, Dry::Types['coercible.string']
           attribute :installments, Dry::Types['coercible.integer']
           attribute :days, Dry::Types['coercible.integer']

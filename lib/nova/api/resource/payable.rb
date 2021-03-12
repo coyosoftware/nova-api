@@ -6,6 +6,10 @@ module Nova
           '/api/payables'
         end
 
+        def self.list(parameters = {})
+          do_get_search(endpoint, parameters.to_h)
+        end
+
         def self.create(parameters)
           model = new parameters
 

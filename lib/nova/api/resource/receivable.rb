@@ -4,10 +4,14 @@ module Nova
       class Receivable < Nova::API::Resource::Bill
         ALLOWED_ATTRIBUTES = Nova::API::Resource::Bill::ALLOWED_ATTRIBUTES.dup << :gross_value
 
-        attribute? :gross_value, Dry::Types['coercible.decimal'].optional
+        attribute? :gross_value, Dry::Types['coercible.float'].optional
 
         def self.endpoint
           '/api/receivables'
+        end
+
+        def self.list(parameters = {})
+          do_get_search(endpoint, parameters.to_h)
         end
 
         def self.create(parameters)

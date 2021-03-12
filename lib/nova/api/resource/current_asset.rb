@@ -8,7 +8,7 @@ module Nova
         attribute? :company, Nova::API::Resource::Company.optional
         attribute? :active, Dry::Types['strict.bool'].optional
         attribute? :image, Dry::Types['coercible.string'].optional
-        attribute? :balance, Dry::Types['coercible.decimal'].optional
+        attribute? :balance, Dry::Types['coercible.float'].optional
 
         def self.endpoint
           '/api/current_assets'

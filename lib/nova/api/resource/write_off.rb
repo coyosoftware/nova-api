@@ -5,7 +5,7 @@ module Nova
         ALLOWED_ATTRIBUTES = %i[]
 
         attribute? :date, Dry::Types['coercible.string'].constrained(format: DATE_REGEX).optional
-        attribute? :value, Dry::Types['coercible.decimal'].optional
+        attribute? :value, Dry::Types['coercible.float'].optional
         attribute? :financial_account, Nova::API::Resource::FinancialAccount.optional
         attribute? :third_party, Nova::API::Resource::ThirdParty.optional
       end

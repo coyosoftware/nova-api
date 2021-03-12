@@ -13,7 +13,7 @@ RSpec.describe Nova::API::Resource::Card do
     it { is_expected.to have_attribute(:company, Nova::API::Resource::Company.optional) }
     it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
     it { is_expected.to have_attribute(:image, Dry::Types['coercible.string'].optional) }
-    it { is_expected.to have_attribute(:balance, Dry::Types['coercible.decimal'].optional) }
+    it { is_expected.to have_attribute(:balance, Dry::Types['coercible.float'].optional) }
 
     it { is_expected.to have_attribute(:description, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:institution, Dry::Types['coercible.string'].optional) }
@@ -23,8 +23,8 @@ RSpec.describe Nova::API::Resource::Card do
     context 'taxes' do
       subject { described_class::Tax }
 
-      it { is_expected.to have_attribute(:percentage, Dry::Types['coercible.decimal']) }
-      it { is_expected.to have_attribute(:fixed, Dry::Types['coercible.decimal']) }
+      it { is_expected.to have_attribute(:percentage, Dry::Types['coercible.float']) }
+      it { is_expected.to have_attribute(:fixed, Dry::Types['coercible.float']) }
       it { is_expected.to have_attribute(:type, Dry::Types['coercible.string']) }
       it { is_expected.to have_attribute(:installments, Dry::Types['coercible.integer']) }
       it { is_expected.to have_attribute(:days, Dry::Types['coercible.integer']) }

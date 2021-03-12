@@ -27,11 +27,11 @@ module Nova
         attribute? :google, Dry::Types['coercible.string'].optional
         attribute? :instagram, Dry::Types['coercible.string'].optional
         attribute? :site, Dry::Types['coercible.string'].optional
-        attribute? :csll, Dry::Types['coercible.decimal'].optional
-        attribute? :pis, Dry::Types['coercible.decimal'].optional
-        attribute? :cofins, Dry::Types['coercible.decimal'].optional
-        attribute? :irpj, Dry::Types['coercible.decimal'].optional
-        attribute? :values_past, Dry::Types['coercible.decimal'].optional
+        attribute? :csll, Dry::Types['coercible.float'].optional
+        attribute? :pis, Dry::Types['coercible.float'].optional
+        attribute? :cofins, Dry::Types['coercible.float'].optional
+        attribute? :irpj, Dry::Types['coercible.float'].optional
+        attribute? :values_past, Dry::Types['coercible.float'].optional
 
         def self.endpoint
           '/api/third_parties'

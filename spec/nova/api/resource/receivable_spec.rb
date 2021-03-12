@@ -17,7 +17,7 @@ RSpec.describe Nova::API::Resource::Receivable do
       subject { described_class::Apportionment }
 
       it { is_expected.to have_attribute(:apportionment_value_ids, Dry::Types['strict.array'].of(Dry::Types['coercible.integer'].optional)) }
-      it { is_expected.to have_attribute(:value, Dry::Types['coercible.decimal']) }
+      it { is_expected.to have_attribute(:value, Dry::Types['coercible.float']) }
     end
 
     it { is_expected.to have_attribute(:company_id, Dry::Types['coercible.integer']) }
@@ -28,16 +28,145 @@ RSpec.describe Nova::API::Resource::Receivable do
     it { is_expected.to have_attribute(:financial_account_id, Dry::Types['coercible.integer']) }
     it { is_expected.to have_attribute(:first_due_date, Dry::Types['coercible.string'].constrained(format: described_class::DATE_REGEX)) }
     it { is_expected.to have_attribute(:forecast, Dry::Types['strict.bool']) }
-    it { is_expected.to have_attribute(:gross_value, Dry::Types['coercible.decimal'].optional) }
+    it { is_expected.to have_attribute(:gross_value, Dry::Types['coercible.float'].optional) }
+    it { is_expected.to have_attribute(:identifier, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:installments, Dry::Types['strict.array'].of(Nova::API::Resource::Installment).optional) }
     it { is_expected.to have_attribute(:installments_number, Dry::Types['coercible.integer']) }
     it { is_expected.to have_attribute(:third_party_id, Dry::Types['coercible.integer']) }
-    it { is_expected.to have_attribute(:total_value, Dry::Types['coercible.decimal']) }
+    it { is_expected.to have_attribute(:total_value, Dry::Types['coercible.float']) }
   end
 
   describe '.endpoint' do
     it 'returns the receivable endpoint' do
       expect(described_class.endpoint).to eq('/api/receivables')
+    end
+  end
+
+  describe '.list' do
+    let(:parameters) { { identifier: 'foobar' } }
+    let(:data) do
+      [
+        {
+          additional_information: nil, apportionments: [{ apportionment_value_ids: [1,2,3], value: 10.45 }], company_id: 20, date: '2021-03-12',
+          document_type: Nova::API::Resource::Bill::DOCUMENT_TYPE::INVOICE, document_number: '11198',
+          due_type: Nova::API::Resource::Bill::DUE_TYPE::MONTHLY, financial_account_id: 22, first_due_date: '2021-03-12', forecast: false, id: 16,
+          identifier: 'foobar', installments: [{ due_date: '2021-03-12', id: 11, number: 1, value: 10.45 }], installments_number: 1, third_party_id: 38,
+          total_value: 10.45
+        },
+        {
+          additional_information: nil, apportionments: [{ apportionment_value_ids: [1,2], value: 102.44 }], company_id: 20, date: '2021-03-12',
+          document_type: Nova::API::Resource::Bill::DOCUMENT_TYPE::INVOICE, document_number: '11199',
+          due_type: Nova::API::Resource::Bill::DUE_TYPE::MONTHLY, financial_account_id: 22, first_due_date: '2021-03-12', forecast: false, id: 17,
+          identifier: 'foobar', installments: [{ due_date: '2021-03-12', id: 12, number: 1, value: 102.44 }], installments_number: 1, third_party_id: 38,
+          total_value: 102.44
+        }
+      ]
+    end
+    let(:response) { double(:response, success?: true, parsed_response: data) }
+
+    subject { described_class.list(Nova::API::SearchParams::Bill.new parameters) }
+
+    it 'issues a get to the receivable list endpoint' do
+      expect(described_class).to receive(:get).with(described_class.endpoint, query: parameters, headers: authorization_header).and_return(response)
+
+      subject
+    end
+
+    context 'with a successful response' do
+      before do
+        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
+          to_return(status: 200, body: JSON.generate(data))
+      end
+
+      it 'returns the response object' do
+        expect(subject).to be_a(Nova::API::ListResponse)
+      end
+
+      it 'returns no error' do
+        response = subject
+
+        expect(response.errors).to be_empty
+      end
+
+      it 'returns the records' do
+        response = subject
+
+        expect(response.records).to all(be_a(Nova::API::Resource::Receivable))
+
+        expect(response.records[0].additional_information).to eq(data[0][:additional_information])
+
+        expect(response.records[0].apportionments).to all(be_a(Nova::API::Resource::Receivable::Apportionment))
+        expect(response.records[0].apportionments[0].apportionment_value_ids).to match_array(data[0][:apportionments][0][:apportionment_value_ids])
+        expect(response.records[0].apportionments[0].value).to eq(data[0][:apportionments][0][:value])
+        
+        expect(response.records[0].company_id).to eq(data[0][:company_id])
+        expect(response.records[0].date).to eq(data[0][:date])
+        expect(response.records[0].document_type).to eq(data[0][:document_type])
+        expect(response.records[0].document_number).to eq(data[0][:document_number])
+        expect(response.records[0].due_type).to eq(data[0][:due_type])
+        expect(response.records[0].financial_account_id).to eq(data[0][:financial_account_id])
+        expect(response.records[0].first_due_date).to eq(data[0][:first_due_date])
+        expect(response.records[0].forecast).to eq(data[0][:forecast])
+        expect(response.records[0].id).to eq(data[0][:id])
+        expect(response.records[0].identifier).to eq(data[0][:identifier])
+
+        expect(response.records[0].installments).to all(be_a(Nova::API::Resource::Installment))
+        expect(response.records[0].installments[0].due_date).to eq(data[0][:installments][0][:due_date])
+        expect(response.records[0].installments[0].id).to eq(data[0][:installments][0][:id])
+        expect(response.records[0].installments[0].number).to eq(data[0][:installments][0][:number])
+        expect(response.records[0].installments[0].value).to eq(data[0][:installments][0][:value])
+
+        expect(response.records[0].installments_number).to eq(data[0][:installments_number])
+        expect(response.records[0].third_party_id).to eq(data[0][:third_party_id])
+        expect(response.records[0].total_value).to eq(data[0][:total_value])
+
+        expect(response.records[1].additional_information).to eq(data[1][:additional_information])
+
+        expect(response.records[1].apportionments).to all(be_a(Nova::API::Resource::Receivable::Apportionment))
+        expect(response.records[1].apportionments[0].apportionment_value_ids).to match_array(data[1][:apportionments][0][:apportionment_value_ids])
+        expect(response.records[1].apportionments[0].value).to eq(data[1][:apportionments][0][:value])
+        
+        expect(response.records[1].company_id).to eq(data[1][:company_id])
+        expect(response.records[1].date).to eq(data[1][:date])
+        expect(response.records[1].document_type).to eq(data[1][:document_type])
+        expect(response.records[1].document_number).to eq(data[1][:document_number])
+        expect(response.records[1].due_type).to eq(data[1][:due_type])
+        expect(response.records[1].financial_account_id).to eq(data[1][:financial_account_id])
+        expect(response.records[1].first_due_date).to eq(data[1][:first_due_date])
+        expect(response.records[1].forecast).to eq(data[1][:forecast])
+        expect(response.records[1].id).to eq(data[1][:id])
+        expect(response.records[1].identifier).to eq(data[1][:identifier])
+
+        expect(response.records[1].installments).to all(be_a(Nova::API::Resource::Installment))
+        expect(response.records[1].installments[0].due_date).to eq(data[1][:installments][0][:due_date])
+        expect(response.records[1].installments[0].id).to eq(data[1][:installments][0][:id])
+        expect(response.records[1].installments[0].number).to eq(data[1][:installments][0][:number])
+        expect(response.records[1].installments[0].value).to eq(data[1][:installments][0][:value])
+
+        expect(response.records[1].installments_number).to eq(data[1][:installments_number])
+        expect(response.records[1].third_party_id).to eq(data[1][:third_party_id])
+        expect(response.records[1].total_value).to eq(data[1][:total_value])
+      end
+    end
+
+    context 'with an error response' do
+      let(:errors) { ['foo', 'bar'] }
+
+      before do
+        stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
+          to_return(status: 400, body: JSON.generate({ errors: errors }))
+      end
+
+      it 'returns the response object' do
+        expect(subject).to be_a(Nova::API::ListResponse)
+      end
+
+      it 'returns the errors' do
+        response = subject
+
+        expect(response.records).to be_nil
+        expect(response.errors).to match_array(errors)
+      end
     end
   end
 

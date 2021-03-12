@@ -29,11 +29,11 @@ RSpec.describe Nova::API::Resource::ThirdParty do
     it { is_expected.to have_attribute(:google, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:instagram, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:site, Dry::Types['coercible.string'].optional) }
-    it { is_expected.to have_attribute(:csll, Dry::Types['coercible.decimal'].optional) }
-    it { is_expected.to have_attribute(:pis, Dry::Types['coercible.decimal'].optional) }
-    it { is_expected.to have_attribute(:cofins, Dry::Types['coercible.decimal'].optional) }
-    it { is_expected.to have_attribute(:irpj, Dry::Types['coercible.decimal'].optional) }
-    it { is_expected.to have_attribute(:values_past, Dry::Types['coercible.decimal'].optional) }
+    it { is_expected.to have_attribute(:csll, Dry::Types['coercible.float'].optional) }
+    it { is_expected.to have_attribute(:pis, Dry::Types['coercible.float'].optional) }
+    it { is_expected.to have_attribute(:cofins, Dry::Types['coercible.float'].optional) }
+    it { is_expected.to have_attribute(:irpj, Dry::Types['coercible.float'].optional) }
+    it { is_expected.to have_attribute(:values_past, Dry::Types['coercible.float'].optional) }
   end
 
   describe '.endpoint' do

@@ -13,7 +13,7 @@ RSpec.describe Nova::API::Resource::Cash do
     it { is_expected.to have_attribute(:company, Nova::API::Resource::Company.optional) }
     it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
     it { is_expected.to have_attribute(:image, Dry::Types['coercible.string'].optional) }
-    it { is_expected.to have_attribute(:balance, Dry::Types['coercible.decimal'].optional) }
+    it { is_expected.to have_attribute(:balance, Dry::Types['coercible.float'].optional) }
 
     it { is_expected.to have_attribute(:description, Dry::Types['coercible.string'].optional) }
   end

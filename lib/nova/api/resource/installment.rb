@@ -6,9 +6,9 @@ module Nova
 
         attribute? :id, Dry::Types['coercible.integer'].optional
         attribute :due_date, Dry::Types['coercible.string'].constrained(format: DATE_REGEX)
-        attribute? :gross_value, Dry::Types['coercible.decimal'].optional
+        attribute? :gross_value, Dry::Types['coercible.float'].optional
         attribute :number, Dry::Types['coercible.integer']
-        attribute :value, Dry::Types['coercible.decimal']
+        attribute :value, Dry::Types['coercible.float']
 
         def self.endpoint
           '/api/installments'
