@@ -67,7 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Apportionment related stuff
 
-[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.6.0...HEAD
+[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.7.0
 [0.6.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.6.0
 [0.5.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.5.0
 [0.4.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.4.0
