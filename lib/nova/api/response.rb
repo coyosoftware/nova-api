@@ -6,11 +6,13 @@ module Nova
   module API
     class Response < Nova::API::Utils::BaseStruct
       attribute? :record, Dry::Types['nominal.any']
-      attribute :errors, Dry::Types['strict.array'].of(Dry::Types['coercible.string']) 
+      attribute :errors, Dry::Types['strict.array'].of(Dry::Types['coercible.string'])
       attribute :success, Dry::Types['strict.bool']
+      attribute :status, Dry::Types['coercible.integer']
 
       def self.build(response, object = nil)
         success = response.success?
+        status = response.code
 
         parsed_response = response.parsed_response.to_h
 
@@ -24,7 +26,7 @@ module Nova
           record = object.class.new(object.attributes.merge(parsed_response))
         end
 
-        new(success: success, errors: errors, record: record)
+        new(success: success, errors: errors, record: record, status: status)
       end
 
       private

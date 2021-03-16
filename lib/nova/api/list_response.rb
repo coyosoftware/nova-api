@@ -8,9 +8,11 @@ module Nova
       attribute :records, Dry::Types['strict.array'].of(Dry::Types['nominal.any']).optional
       attribute :errors, Dry::Types['strict.array'].of(Dry::Types['coercible.string'])
       attribute :success, Dry::Types['strict.bool']
+      attribute :status, Dry::Types['coercible.integer']
 
       def self.build(response, klass)
         success = response.success?
+        status = response.code
 
         parsed_response = response.parsed_response
 
@@ -27,7 +29,7 @@ module Nova
 
         errors ||= []
 
-        new(success: success, errors: errors, records: records)
+        new(success: success, errors: errors, records: records, status: status)
       end
 
       private

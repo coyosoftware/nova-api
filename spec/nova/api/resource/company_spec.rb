@@ -28,7 +28,7 @@ RSpec.describe Nova::API::Resource::Company do
         { id: 2, name: 'Conceição S.A.', trading_name: nil }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.list }
 

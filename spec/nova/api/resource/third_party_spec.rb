@@ -50,7 +50,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
         { id: 102, trading_name: 'Distributed multimedia matrices', supplier: false, customer: true }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.list(Nova::API::SearchParams::ThirdParty.new parameters) }
 
@@ -122,7 +122,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
         { id: 102, trading_name: 'Distributed multimedia matrices', supplier: true, customer: true }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.suppliers(Nova::API::SearchParams::ThirdParty.new parameters) }
 
@@ -194,7 +194,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
         { id: 102, trading_name: 'Distributed multimedia matrices', supplier: true, customer: true }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.customers(Nova::API::SearchParams::ThirdParty.new parameters) }
 
@@ -291,7 +291,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
         linkedin: linkedin, google: google, instagram: instagram, site: site, csll: csll, pis: pis, cofins: cofins, irpj: irpj, values_past: values_past
       }
     end
-    let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+    let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 201) }
 
     subject { described_class.create(parameters) }
 
@@ -395,7 +395,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 200) }
 
       subject { described_class.update(id, parameters) }
 
@@ -467,7 +467,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.destroy(id) }
 
@@ -554,7 +554,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
     end
 
     context 'when the id is not set' do
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 201) }
 
       subject { described_class.new(parameters) }
 
@@ -618,7 +618,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id)) }
 
@@ -723,7 +723,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id)) }
 
@@ -798,7 +798,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id)) }
 

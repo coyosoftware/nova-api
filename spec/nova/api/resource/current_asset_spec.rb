@@ -45,7 +45,7 @@ RSpec.describe Nova::API::Resource::CurrentAsset do
         ]
       }
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.statement(Nova::API::SearchParams::CurrentAssetStatement.new parameters) }
 
@@ -150,7 +150,7 @@ RSpec.describe Nova::API::Resource::CurrentAsset do
           ]
         }
       end
-      let(:response) { double(:response, success?: true, parsed_response: data) }
+      let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
       subject { described_class.new(parameters.merge(id: current_asset_id)) }
 

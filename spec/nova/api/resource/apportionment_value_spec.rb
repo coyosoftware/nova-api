@@ -26,7 +26,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
   describe '.create' do
     let(:name) { 'foobar' }
     let(:parameters) { { name: name } }
-    let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+    let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 201) }
 
     subject { described_class.create(apportionment_id, parameters) }
 
@@ -96,7 +96,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 200) }
 
       subject { described_class.update(apportionment_id, id, parameters) }
 
@@ -164,7 +164,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.destroy(apportionment_id, id) }
 
@@ -227,7 +227,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.reactivate(apportionment_id, id) }
 
@@ -284,7 +284,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
     let(:parameters) { { name: name } }
   
     context 'when the id is not set' do
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 201) }
 
       subject { described_class.new(parameters.merge(apportionment_id: apportionment_id)) }
 
@@ -344,7 +344,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id, apportionment_id: apportionment_id)) }
 
@@ -415,7 +415,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id, apportionment_id: apportionment_id)) }
 
@@ -486,7 +486,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id, apportionment_id: apportionment_id)) }
 
@@ -560,7 +560,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id, apportionment_id: apportionment_id)) }
 

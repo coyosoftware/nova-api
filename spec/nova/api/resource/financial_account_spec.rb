@@ -79,7 +79,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.list }
 
@@ -194,7 +194,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.income_accounts }
 
@@ -314,7 +314,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.payable_accounts }
 
@@ -433,7 +433,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
         }
       ]
     end
-    let(:response) { double(:response, success?: true, parsed_response: data) }
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
 
     subject { described_class.receivable_accounts }
 
@@ -508,7 +508,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     let(:financial_account_id) { 10 }
     let(:name) { 'foobar' }
     let(:parameters) { { name: name, financial_account_id: financial_account_id } }
-    let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+    let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 201) }
 
     subject { described_class.create(parameters) }
 
@@ -579,7 +579,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 200) }
 
       subject { described_class.update(id, parameters) }
 
@@ -647,7 +647,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.destroy(id) }
 
@@ -718,7 +718,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     let(:parameters) { { financial_account_id: financial_account_id, name: name } }
 
     context 'when the id is not set' do
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 201) }
 
       subject { described_class.new(parameters) }
 
@@ -778,7 +778,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id)) }
 
@@ -850,7 +850,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }) }
+      let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id)) }
 
@@ -921,7 +921,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
     context 'when the id is set' do
       let(:id) { 99 }
-      let(:response) { double(:response, success?: true, parsed_response: nil) }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
 
       subject { described_class.new(parameters.merge(id: id)) }
 
