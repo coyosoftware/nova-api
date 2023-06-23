@@ -5,7 +5,7 @@ module Nova
         ALLOWED_ATTRIBUTES = %i[]
 
         attribute :action, Dry::Types['coercible.string']
-        attribute :can, Dry::Types['coercible.bool']
+        attribute :can, Dry::Types['strict.bool']
         attribute :subject, Dry::Types['coercible.string']
 
         def self.endpoint

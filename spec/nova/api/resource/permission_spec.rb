@@ -10,7 +10,7 @@ RSpec.describe Nova::API::Resource::Permission do
     subject { described_class }
 
     it { is_expected.to have_attribute(:action, Dry::Types['coercible.string']) }
-    it { is_expected.to have_attribute(:can, Dry::Types['coercible.bool']) }
+    it { is_expected.to have_attribute(:can, Dry::Types['strict.bool']) }
     it { is_expected.to have_attribute(:subject, Dry::Types['coercible.string']) }
   end
 
