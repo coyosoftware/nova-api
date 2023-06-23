@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@0.1.2 
-
+  ruby: circleci/ruby@1.0.4
 jobs:
   test:
     docker:
@@ -26,10 +25,7 @@ jobs:
           command: bash .circleci/setup-rubygems.sh
       - run:
           name: Publish to Rubygems
-          command: |
-            gem build nova-api.gemspec
-            gem push "nova-api-$(git describe --tags).gem"
-
+          command: bundle exec rake release
 workflows:
   version: 2
   test-deploy:
