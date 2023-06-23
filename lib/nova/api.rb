@@ -24,6 +24,8 @@ require "nova/api/resource/financial_account"
 require "nova/api/resource/third_party"
 require "nova/api/resource/write_off"
 
+require "nova/api/resource/permission"
+
 require "nova/api/resource/response/current_asset_statement"
 
 require "nova/api/search_params/apportionment"
@@ -84,6 +86,10 @@ module Nova
 
       def payables
         Nova::API::Resource::Payable
+      end
+
+      def permissions
+        Nova::API::Resource::Permission
       end
 
       def receivables
