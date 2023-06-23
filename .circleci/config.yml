@@ -5,35 +5,33 @@ jobs:
   test:
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
-    executor: ruby/default
     steps:
       - checkout
-      - run:
-          name: Bundle
-          command: bash bin/setup
+      - ruby/install-deps
       - run:
           name: Run tests
-          command: bundle exec rspec
+          command: bundle exec rake
   deploy:
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
-    executor: ruby/default
-    steps:
-      - checkout
+    - checkout
+      - ruby/install-deps
       - run:
-          name: Setup Rubygems
-          command: bash .circleci/setup-rubygems.sh
-      - run:
-          name: Publish to Rubygems
+          name: Publish gem to Rubygems
           command: bundle exec rake release
 workflows:
   version: 2
   test-deploy:
     jobs:
-      - test
-      - deploy:
+      - test:
           filters:
             tags:
               only: /.*/
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^v.*/
             branches:
               ignore: /.*/
