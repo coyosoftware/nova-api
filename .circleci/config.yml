@@ -14,7 +14,8 @@ jobs:
   deploy:
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
-    - checkout
+    steps:
+      - checkout
       - ruby/install-deps
       - run:
           name: Publish gem to Rubygems
