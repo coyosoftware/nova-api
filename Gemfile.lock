@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     nova-api (0.9.0)
-      dry-struct (~> 1.4.0)
-      dry-types (~> 1.5.1)
+      dry-struct (~> 1.6)
+      dry-types (~> 1.7)
       httparty (~> 0.1)
 
 GEM
@@ -17,28 +17,25 @@ GEM
       rexml
     diff-lcs (1.4.4)
     docile (1.3.5)
-    dry-configurable (0.12.1)
+    dry-core (1.0.0)
       concurrent-ruby (~> 1.0)
-      dry-core (~> 0.5, >= 0.5.0)
-    dry-container (0.7.2)
+      zeitwerk (~> 2.6)
+    dry-inflector (1.0.0)
+    dry-logic (1.5.0)
       concurrent-ruby (~> 1.0)
-      dry-configurable (~> 0.1, >= 0.1.3)
-    dry-core (0.5.0)
-      concurrent-ruby (~> 1.0)
-    dry-inflector (0.2.0)
-    dry-logic (1.1.0)
-      concurrent-ruby (~> 1.0)
-      dry-core (~> 0.5, >= 0.5)
-    dry-struct (1.4.0)
-      dry-core (~> 0.5, >= 0.5)
-      dry-types (~> 1.5)
+      dry-core (~> 1.0, < 2)
+      zeitwerk (~> 2.6)
+    dry-struct (1.6.0)
+      dry-core (~> 1.0, < 2)
+      dry-types (>= 1.7, < 2)
       ice_nine (~> 0.11)
-    dry-types (1.5.1)
+      zeitwerk (~> 2.6)
+    dry-types (1.7.1)
       concurrent-ruby (~> 1.0)
-      dry-container (~> 0.3)
-      dry-core (~> 0.5, >= 0.5)
-      dry-inflector (~> 0.1, >= 0.1.2)
-      dry-logic (~> 1.0, >= 1.0.2)
+      dry-core (~> 1.0)
+      dry-inflector (~> 1.0)
+      dry-logic (~> 1.4)
+      zeitwerk (~> 2.6)
     hashdiff (1.0.1)
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
@@ -47,7 +44,7 @@ GEM
     mini_mime (1.1.2)
     multi_xml (0.6.0)
     public_suffix (4.0.6)
-    rake (10.5.0)
+    rake (13.0.6)
     rexml (3.2.4)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
@@ -76,19 +73,20 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    zeitwerk (2.6.8)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.17)
+  bundler (~> 2)
   byebug (~> 11.1.3)
   nova-api!
-  rake (~> 10.0)
+  rake (~> 13)
   rspec (~> 3.0)
   rspec-dry-struct (~> 0.1)
   simplecov (~> 0.21)
   webmock (~> 3.11.2)
 
 BUNDLED WITH
-   1.17.3
+   2.4.10

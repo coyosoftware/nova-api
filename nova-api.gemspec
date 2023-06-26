@@ -38,8 +38,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.17"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "bundler", "~> 2"
+  spec.add_development_dependency "rake", "~> 13"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "simplecov", "~> 0.21"
   spec.add_development_dependency "byebug", "~> 11.1.3"
@@ -47,6 +47,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-dry-struct", "~> 0.1"
 
   spec.add_dependency "httparty", "~> 0.1"
-  spec.add_dependency "dry-struct", "~> 1.4.0"
-  spec.add_dependency "dry-types", "~> 1.5.1"
+  spec.add_dependency "dry-struct", "~> 1.6"
+  spec.add_dependency "dry-types", "~> 1.7"
 end
