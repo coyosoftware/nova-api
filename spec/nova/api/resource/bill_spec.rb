@@ -20,12 +20,21 @@ RSpec.describe Nova::API::Resource::Bill do
       it { is_expected.to have_attribute(:value, Dry::Types['coercible.float']) }
     end
 
+    it { is_expected.to have_attribute(:attachments, Dry::Types['strict.array'].of(Dry::Types['coercible.string']).optional) }
     it { is_expected.to have_attribute(:company_id, Dry::Types['coercible.integer']) }
     it { is_expected.to have_attribute(:date, Dry::Types['coercible.string'].constrained(format: described_class::DATE_REGEX)) }
     it { is_expected.to have_attribute(:document_type, Dry::Types['coercible.integer']) }
     it { is_expected.to have_attribute(:document_number, Dry::Types['coercible.string']) }
     it { is_expected.to have_attribute(:due_type, Dry::Types['coercible.integer']) }
-    it { is_expected.to have_attribute(:financial_account_id, Dry::Types['coercible.integer']) }
+    it { is_expected.to have_attribute(:financial_accounts, Dry::Types['strict.array'].of(Nova::API::Resource::Bill::FinancialAccount).optional) }
+
+    context 'financial accounts' do
+      subject { described_class::FinancialAccount }
+
+      it { is_expected.to have_attribute(:financial_account_id, Dry::Types['coercible.integer']) }
+      it { is_expected.to have_attribute(:value, Dry::Types['coercible.float']) }
+    end
+
     it { is_expected.to have_attribute(:first_due_date, Dry::Types['coercible.string'].constrained(format: described_class::DATE_REGEX)) }
     it { is_expected.to have_attribute(:forecast, Dry::Types['strict.bool']) }
     it { is_expected.to have_attribute(:identifier, Dry::Types['coercible.string'].optional) }
@@ -80,6 +89,10 @@ RSpec.describe Nova::API::Resource::Bill do
 
     it 'has the statement mapped as 10' do
       expect(subject::STATEMENT).to eq(10)
+    end
+
+    it 'has the order number mapped as 11' do
+      expect(subject::ORDER_NUMBER).to eq(11)
     end
   end
 

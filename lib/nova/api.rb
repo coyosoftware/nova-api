@@ -15,6 +15,10 @@ require "nova/api/resource/bill"
 require "nova/api/resource/payable"
 require "nova/api/resource/receivable"
 
+require "nova/api/resource/direct_bill"
+require "nova/api/resource/direct_payable"
+require "nova/api/resource/direct_receivable"
+
 require "nova/api/resource/current_asset"
 require "nova/api/resource/bank"
 require "nova/api/resource/card"
@@ -78,6 +82,14 @@ module Nova
 
       def current_assets
         Nova::API::Resource::CurrentAsset
+      end
+
+      def direct_payables
+        Nova::API::Resource::DirectPayable
+      end
+
+      def direct_receivables
+        Nova::API::Resource::DirectReceivable
       end
 
       def financial_accounts

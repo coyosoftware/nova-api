@@ -5,11 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.9.0] - 2023-06-23
+## [1.0.0] - 2023-07-10
 
 ### Added
 
 - Permissions list endpoint
+
+- Direct bill endpoint
+
+- New bill document type (ORDER_NUMBER)
+
+- Attachment support for bills
+
+### Changed
+
+- No longer accepting financial_account_id parameter in Receivable and Payable creation/update endpoints. Now the financial account information must be sent using the new financial_accounts array parameter. This was made to accept multiple financial accounts for the same bill.
 
 ## [0.8.0] - 2021-03-16
 
@@ -79,7 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Apportionment related stuff
 
-[unreleased]: https://github.com/coyosoftware/nova-api/compare/0.8.0...HEAD
+[unreleased]: https://github.com/coyosoftware/nova-api/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/coyosoftware/nova-api/releases/tag/1.0.0
 [0.8.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.8.0
 [0.7.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.7.0
 [0.6.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.6.0

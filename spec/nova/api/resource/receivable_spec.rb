@@ -20,12 +20,21 @@ RSpec.describe Nova::API::Resource::Receivable do
       it { is_expected.to have_attribute(:value, Dry::Types['coercible.float']) }
     end
 
+    it { is_expected.to have_attribute(:attachments, Dry::Types['strict.array'].of(Dry::Types['coercible.string']).optional) }
     it { is_expected.to have_attribute(:company_id, Dry::Types['coercible.integer']) }
     it { is_expected.to have_attribute(:date, Dry::Types['coercible.string'].constrained(format: described_class::DATE_REGEX)) }
     it { is_expected.to have_attribute(:document_type, Dry::Types['coercible.integer']) }
     it { is_expected.to have_attribute(:document_number, Dry::Types['coercible.string']) }
     it { is_expected.to have_attribute(:due_type, Dry::Types['coercible.integer']) }
-    it { is_expected.to have_attribute(:financial_account_id, Dry::Types['coercible.integer']) }
+    it { is_expected.to have_attribute(:financial_accounts, Dry::Types['strict.array'].of(Nova::API::Resource::Bill::FinancialAccount).optional) }
+
+    context 'financial accounts' do
+      subject { described_class::FinancialAccount }
+
+      it { is_expected.to have_attribute(:financial_account_id, Dry::Types['coercible.integer']) }
+      it { is_expected.to have_attribute(:value, Dry::Types['coercible.float']) }
+    end
+
     it { is_expected.to have_attribute(:first_due_date, Dry::Types['coercible.string'].constrained(format: described_class::DATE_REGEX)) }
     it { is_expected.to have_attribute(:forecast, Dry::Types['strict.bool']) }
     it { is_expected.to have_attribute(:gross_value, Dry::Types['coercible.float'].optional) }
@@ -49,15 +58,17 @@ RSpec.describe Nova::API::Resource::Receivable do
         {
           additional_information: nil, apportionments: [{ apportionment_value_ids: [1,2,3], value: 10.45 }], company_id: 20, date: '2021-03-12',
           document_type: Nova::API::Resource::Bill::DOCUMENT_TYPE::INVOICE, document_number: '11198',
-          due_type: Nova::API::Resource::Bill::DUE_TYPE::MONTHLY, financial_account_id: 22, first_due_date: '2021-03-12', forecast: false, id: 16,
-          identifier: 'foobar', installments: [{ due_date: '2021-03-12', id: 11, number: 1, value: 10.45 }], installments_number: 1, third_party_id: 38,
+          due_type: Nova::API::Resource::Bill::DUE_TYPE::MONTHLY, financial_accounts: [{ financial_account_id: 22, value: 10.45 }],
+          first_due_date: '2021-03-12', forecast: false, id: 16, identifier: 'foobar',
+          installments: [{ due_date: '2021-03-12', id: 11, number: 1, value: 10.45 }], installments_number: 1, third_party_id: 38,
           total_value: 10.45
         },
         {
           additional_information: nil, apportionments: [{ apportionment_value_ids: [1,2], value: 102.44 }], company_id: 20, date: '2021-03-12',
           document_type: Nova::API::Resource::Bill::DOCUMENT_TYPE::INVOICE, document_number: '11199',
-          due_type: Nova::API::Resource::Bill::DUE_TYPE::MONTHLY, financial_account_id: 22, first_due_date: '2021-03-12', forecast: false, id: 17,
-          identifier: 'foobar', installments: [{ due_date: '2021-03-12', id: 12, number: 1, value: 102.44 }], installments_number: 1, third_party_id: 38,
+          due_type: Nova::API::Resource::Bill::DUE_TYPE::MONTHLY, financial_accounts: [{ financial_account_id: 22, value: 102.44 }],
+          first_due_date: '2021-03-12', forecast: false, id: 17, identifier: 'foobar',
+          installments: [{ due_date: '2021-03-12', id: 12, number: 1, value: 102.44 }], installments_number: 1, third_party_id: 38,
           total_value: 102.44
         }
       ]
@@ -98,13 +109,17 @@ RSpec.describe Nova::API::Resource::Receivable do
         expect(response.records[0].apportionments).to all(be_a(Nova::API::Resource::Receivable::Apportionment))
         expect(response.records[0].apportionments[0].apportionment_value_ids).to match_array(data[0][:apportionments][0][:apportionment_value_ids])
         expect(response.records[0].apportionments[0].value).to eq(data[0][:apportionments][0][:value])
-        
+
         expect(response.records[0].company_id).to eq(data[0][:company_id])
         expect(response.records[0].date).to eq(data[0][:date])
         expect(response.records[0].document_type).to eq(data[0][:document_type])
         expect(response.records[0].document_number).to eq(data[0][:document_number])
         expect(response.records[0].due_type).to eq(data[0][:due_type])
-        expect(response.records[0].financial_account_id).to eq(data[0][:financial_account_id])
+
+        expect(response.records[0].financial_accounts).to all(be_a(Nova::API::Resource::Receivable::FinancialAccount))
+        expect(response.records[0].financial_accounts[0].financial_account_id).to eq(data[0][:financial_accounts][0][:financial_account_id])
+        expect(response.records[0].financial_accounts[0].value).to eq(data[0][:financial_accounts][0][:value])
+
         expect(response.records[0].first_due_date).to eq(data[0][:first_due_date])
         expect(response.records[0].forecast).to eq(data[0][:forecast])
         expect(response.records[0].id).to eq(data[0][:id])
@@ -125,13 +140,17 @@ RSpec.describe Nova::API::Resource::Receivable do
         expect(response.records[1].apportionments).to all(be_a(Nova::API::Resource::Receivable::Apportionment))
         expect(response.records[1].apportionments[0].apportionment_value_ids).to match_array(data[1][:apportionments][0][:apportionment_value_ids])
         expect(response.records[1].apportionments[0].value).to eq(data[1][:apportionments][0][:value])
-        
+
         expect(response.records[1].company_id).to eq(data[1][:company_id])
         expect(response.records[1].date).to eq(data[1][:date])
         expect(response.records[1].document_type).to eq(data[1][:document_type])
         expect(response.records[1].document_number).to eq(data[1][:document_number])
         expect(response.records[1].due_type).to eq(data[1][:due_type])
-        expect(response.records[1].financial_account_id).to eq(data[1][:financial_account_id])
+
+        expect(response.records[1].financial_accounts).to all(be_a(Nova::API::Resource::Receivable::FinancialAccount))
+        expect(response.records[1].financial_accounts[0].financial_account_id).to eq(data[1][:financial_accounts][0][:financial_account_id])
+        expect(response.records[1].financial_accounts[0].value).to eq(data[1][:financial_accounts][0][:value])
+
         expect(response.records[1].first_due_date).to eq(data[1][:first_due_date])
         expect(response.records[1].forecast).to eq(data[1][:forecast])
         expect(response.records[1].id).to eq(data[1][:id])
@@ -195,10 +214,9 @@ RSpec.describe Nova::API::Resource::Receivable do
     let(:parameters) do
       {
         additional_information: additional_information, apportionments: apportionments, company_id: company_id, date: date, document_type: document_type,
-        document_number: document_number, due_type: due_type, financial_account_id: financial_account_id, first_due_date: first_due_date,
-        forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size, third_party_id: third_party_id,
-        total_value: total_value
-
+        document_number: document_number, due_type: due_type, financial_accounts: [{ financial_account_id: financial_account_id, value: total_value }],
+        first_due_date: first_due_date, forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size,
+        third_party_id: third_party_id, total_value: total_value
       }
     end
     let(:response) { double(:response, success?: true, parsed_response: { id: 99 }, code: 201) }
@@ -236,7 +254,7 @@ RSpec.describe Nova::API::Resource::Receivable do
 
         parameters.keys.each do |field|
           data = response.record.send(field.to_sym)
-          
+
           if data.is_a? Array
             data.each_with_index do |data, index|
               if data.respond_to? :attributes
@@ -249,7 +267,7 @@ RSpec.describe Nova::API::Resource::Receivable do
             expect(data).to eq(parameters[field])
           end
         end
-        
+
         expect(response.record.id).to eq(id)
       end
     end
@@ -300,10 +318,9 @@ RSpec.describe Nova::API::Resource::Receivable do
     let(:parameters) do
       {
         additional_information: additional_information, apportionments: apportionments, company_id: company_id, date: date, document_type: document_type,
-        document_number: document_number, due_type: due_type, financial_account_id: financial_account_id, first_due_date: first_due_date,
-        forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size, third_party_id: third_party_id,
-        total_value: total_value
-
+        document_number: document_number, due_type: due_type, financial_accounts: [{ financial_account_id: financial_account_id, value: total_value }],
+        first_due_date: first_due_date, forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size,
+        third_party_id: third_party_id, total_value: total_value
       }
     end
 
@@ -348,7 +365,7 @@ RSpec.describe Nova::API::Resource::Receivable do
 
           parameters.keys.each do |field|
             data = response.record.send(field.to_sym)
-            
+
             if data.is_a? Array
               data.each_with_index do |data, index|
                 if data.respond_to? :attributes
@@ -361,7 +378,7 @@ RSpec.describe Nova::API::Resource::Receivable do
               expect(data).to eq(parameters[field])
             end
           end
-          
+
           expect(response.record.id).to eq(id)
         end
       end
@@ -470,10 +487,9 @@ RSpec.describe Nova::API::Resource::Receivable do
     end
     let(:parameters) do
       {
-        id: id, company_id: company_id, date: date, document_type: document_type, due_type: due_type, financial_account_id: financial_account_id,
-        first_due_date: first_due_date,
+        id: id, company_id: company_id, date: date, document_type: document_type, due_type: due_type,
+        financial_accounts: [{ financial_account_id: financial_account_id, value: total_value }], first_due_date: first_due_date,
         forecast: false, installments: installments, installments_number: installments.size, third_party_id: third_party_id, total_value: total_value
-
       }
     end
 
@@ -509,10 +525,9 @@ RSpec.describe Nova::API::Resource::Receivable do
     let(:parameters) do
       {
         additional_information: additional_information, apportionments: apportionments, company_id: company_id, date: date, document_type: document_type,
-        document_number: document_number, due_type: due_type, financial_account_id: financial_account_id, first_due_date: first_due_date,
-        forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size, third_party_id: third_party_id,
-        total_value: total_value
-
+        document_number: document_number, due_type: due_type, financial_accounts: [{ financial_account_id: financial_account_id, value: total_value }],
+        first_due_date: first_due_date, forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size,
+        third_party_id: third_party_id, total_value: total_value
       }
     end
 
@@ -552,7 +567,7 @@ RSpec.describe Nova::API::Resource::Receivable do
 
           parameters.keys.each do |field|
             data = response.record.send(field.to_sym)
-            
+
             if data.is_a? Array
               data.each_with_index do |data, index|
                 if data.respond_to? :attributes
@@ -565,7 +580,7 @@ RSpec.describe Nova::API::Resource::Receivable do
               expect(data).to eq(parameters[field])
             end
           end
-          
+
           expect(response.record.id).to eq(id)
         end
       end
@@ -626,7 +641,7 @@ RSpec.describe Nova::API::Resource::Receivable do
 
           parameters.keys.each do |field|
             data = response.record.send(field.to_sym)
-            
+
             if data.is_a? Array
               data.each_with_index do |data, index|
                 if data.respond_to? :attributes
@@ -639,7 +654,7 @@ RSpec.describe Nova::API::Resource::Receivable do
               expect(data).to eq(parameters[field])
             end
           end
-          
+
           expect(response.record.id).to eq(id)
         end
       end
@@ -691,9 +706,9 @@ RSpec.describe Nova::API::Resource::Receivable do
     let(:parameters) do
       {
         additional_information: additional_information, apportionments: apportionments, company_id: company_id, date: date, document_type: document_type,
-        document_number: document_number, due_type: due_type, financial_account_id: financial_account_id, first_due_date: first_due_date,
-        forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size, third_party_id: third_party_id,
-        total_value: total_value
+        document_number: document_number, due_type: due_type, financial_accounts: [{ financial_account_id: financial_account_id, value: total_value }],
+        first_due_date: first_due_date, forecast: false, gross_value: gross_value, installments: installments, installments_number: installments.size,
+        third_party_id: third_party_id, total_value: total_value
       }
     end
 
@@ -740,7 +755,7 @@ RSpec.describe Nova::API::Resource::Receivable do
 
           parameters.keys.each do |field|
             data = response.record.send(field.to_sym)
-            
+
             if data.is_a? Array
               data.each_with_index do |data, index|
                 if data.respond_to? :attributes
@@ -753,7 +768,7 @@ RSpec.describe Nova::API::Resource::Receivable do
               expect(data).to eq(parameters[field])
             end
           end
-          
+
           expect(response.record.id).to eq(id)
         end
       end
@@ -798,10 +813,9 @@ RSpec.describe Nova::API::Resource::Receivable do
     end
     let(:parameters) do
       {
-        company_id: company_id, date: date, document_type: document_type, due_type: due_type, financial_account_id: financial_account_id,
-        first_due_date: first_due_date,
+        company_id: company_id, date: date, document_type: document_type, due_type: due_type,
+        financial_accounts: [{ financial_account_id: financial_account_id, value: total_value }], first_due_date: first_due_date,
         forecast: false, installments: installments, installments_number: installments.size, third_party_id: third_party_id, total_value: total_value
-
       }
     end
 

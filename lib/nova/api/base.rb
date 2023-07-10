@@ -4,7 +4,6 @@ require 'forwardable'
 module Nova
   module API
     class Base < Nova::API::Utils::BaseStruct
-      extend Forwardable
       include HTTParty
 
       format :json
@@ -27,16 +26,6 @@ module Nova
       end
 
       protected
-
-      def self.initialize_empty_model_with_id(klass, id, additional_attributes = {})
-        data = klass.schema.type.keys.map do |field|
-          name = field.name
-
-          value_for_field(name, additional_attributes[name], field)
-        end
-
-        klass.new(Hash[*data.flatten].merge(id: id))
-      end
 
       def self.do_get_search(endpoint, query, object = self)
         response = perform_get(endpoint, query, headers)
@@ -90,14 +79,6 @@ module Nova
 
       private
 
-      def self.value_for_field(name, override_value, field)
-        return [name, override_value] if override_value
-          
-        type = field.type
-
-        type.optional? ? [name, nil] :  [name, generate_valid_value_for(type)]
-      end
-
       def self.perform_get(endpoint, query, headers = {})
         set_base_uri
 
@@ -123,18 +104,6 @@ module Nova
         base_uri base_url
       end
       def_delegator self, :set_base_uri
-
-      def self.generate_valid_value_for(type)
-        case type.name
-        when Dry::Types['integer'].name, Dry::Types['float'].name, Dry::Types['decimal'].name
-          0
-        when Dry::Types['bool'].name
-          false
-        else
-          nil
-        end
-      end
-      def_delegator self, :generate_valid_value_for
     end
   end
 end
