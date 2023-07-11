@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Attachment support for bills
 
+- Write off document types enum
+
 ### Changed
 
 - No longer accepting financial_account_id parameter in Receivable and Payable creation/update endpoints. Now the financial account information must be sent using the new financial_accounts array parameter. This was made to accept multiple financial accounts for the same bill.
