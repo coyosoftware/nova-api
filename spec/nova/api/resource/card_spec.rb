@@ -25,7 +25,8 @@ RSpec.describe Nova::API::Resource::Card do
 
       it { is_expected.to have_attribute(:percentage, Dry::Types['coercible.float']) }
       it { is_expected.to have_attribute(:fixed, Dry::Types['coercible.float']) }
-      it { is_expected.to have_attribute(:type, Dry::Types['coercible.string']) }
+      it { is_expected.to have_attribute(:type, Dry::Types['coercible.integer']) }
+      it { is_expected.to have_attribute(:id, Dry::Types['coercible.integer']) }
       it { is_expected.to have_attribute(:installments, Dry::Types['coercible.integer']) }
       it { is_expected.to have_attribute(:days, Dry::Types['coercible.integer']) }
     end
@@ -47,18 +48,22 @@ RSpec.describe Nova::API::Resource::Card do
           id: 18, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, active: true, description: 'Antunes Comércio',
           image: 'https://assets.nova.money/images/card_logos/mercadopago.png', balance: 0, institution: 'Mercado Pago',
           taxes: [
-            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Débito', installments: 1, days: 1 },
-            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito à vista', installments: 1, days: 1 },
-            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito parcelado', installments: 2, days: 1 },
-            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito parcelado', installments: 3, days: 1 }
+            { id: 1, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::DEBIT, installments: 1, days: 1 },
+            { id: 2, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::CREDIT, installments: 1, days: 1 },
+            { id: 3, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::CREDIT_WITH_INSTALLMENTS, installments: 2, days: 1 },
+            { id: 4, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::CREDIT_WITH_INSTALLMENTS, installments: 3, days: 1 },
+            { id: 5, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::BANK_SLIP, installments: 1, days: 1 },
+            { id: 6, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::PIX, installments: 1, days: 1 }
           ]
         },
         {
           id: 22, company: { id: 6, name: 'Moniz, Velasques e Solimões' }, active: true, description: 'Castanho-Custódio',
           image: 'https://assets.nova.money/images/card_logos/izettle.png', balance: 0, institution: 'iZettle',
           taxes: [
-            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Débito', installments: 1, days: 1 },
-            { percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: 'Crédito à vista', installments: 1, days: 1 }
+            { id: 7, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::DEBIT, installments: 1, days: 1 },
+            { id: 8, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::CREDIT, installments: 1, days: 1 },
+            { id: 9, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::BANK_SLIP, installments: 1, days: 1 },
+            { id: 10, percentage: BigDecimal('1.33'), fixed: BigDecimal('0.55'), type: Nova::API::Resource::Card::Tax::TYPE::PIX, installments: 1, days: 1 }
           ]
         }
       ]
@@ -167,6 +172,100 @@ RSpec.describe Nova::API::Resource::Card do
 
         expect(response.records).to be_nil
         expect(response.errors).to match_array(errors)
+      end
+    end
+  end
+
+  context 'card tax' do
+    describe 'types' do
+      subject { described_class::Tax::TYPE }
+
+      it 'has the debig mapped as 0' do
+        expect(subject::DEBIT).to eq(0)
+      end
+
+      it 'has the credit mapped as 1' do
+        expect(subject::CREDIT).to eq(1)
+      end
+
+      it 'has the credit with installments mapped as 2' do
+        expect(subject::CREDIT_WITH_INSTALLMENTS).to eq(2)
+      end
+
+      it 'has the bank slip mapped as 3' do
+        expect(subject::BANK_SLIP).to eq(3)
+      end
+
+      it 'has the pix mapped as 4' do
+        expect(subject::PIX).to eq(4)
+      end
+    end
+
+    context 'methods' do
+      describe '#debit?' do
+        context 'when the type is debit' do
+          subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: described_class::Tax::TYPE::DEBIT, installments: 1, days: 1).debit? }
+
+          it { is_expected.to be_truthy }
+        end
+
+        [described_class::Tax::TYPE::CREDIT, described_class::Tax::TYPE::CREDIT_WITH_INSTALLMENTS, described_class::Tax::TYPE::BANK_SLIP, described_class::Tax::TYPE::PIX].each do |type|
+          context "when the type is #{type}" do
+            subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: type, installments: 1, days: 1).debit? }
+
+            it { is_expected.to be_falsy }
+          end
+        end
+      end
+
+      describe '#credit?' do
+        [described_class::Tax::TYPE::CREDIT, described_class::Tax::TYPE::CREDIT_WITH_INSTALLMENTS].each do |type|
+          context "when the type is #{type}" do
+            subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: type, installments: 1, days: 1).credit? }
+
+            it { is_expected.to be_truthy }
+          end
+        end
+
+        [described_class::Tax::TYPE::DEBIT, described_class::Tax::TYPE::BANK_SLIP, described_class::Tax::TYPE::PIX].each do |type|
+          context "when the type is #{type}" do
+            subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: type, installments: 1, days: 1).credit? }
+
+            it { is_expected.to be_falsy }
+          end
+        end
+      end
+
+      describe '#bank_slip?' do
+        context 'when the type is bank_slip' do
+          subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: described_class::Tax::TYPE::BANK_SLIP, installments: 1, days: 1).bank_slip? }
+
+          it { is_expected.to be_truthy }
+        end
+
+        [described_class::Tax::TYPE::DEBIT, described_class::Tax::TYPE::CREDIT, described_class::Tax::TYPE::CREDIT_WITH_INSTALLMENTS, described_class::Tax::TYPE::PIX].each do |type|
+          context "when the type is #{type}" do
+            subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: type, installments: 1, days: 1).bank_slip? }
+
+            it { is_expected.to be_falsy }
+          end
+        end
+      end
+
+      describe '#pix?' do
+        context 'when the type is pix' do
+          subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: described_class::Tax::TYPE::PIX, installments: 1, days: 1).pix? }
+
+          it { is_expected.to be_truthy }
+        end
+
+        [described_class::Tax::TYPE::DEBIT, described_class::Tax::TYPE::CREDIT, described_class::Tax::TYPE::CREDIT_WITH_INSTALLMENTS, described_class::Tax::TYPE::BANK_SLIP].each do |type|
+          context "when the type is #{type}" do
+            subject { described_class::Tax.new(id: 1, percentage: 0, fixed: 0, type: type, installments: 1, days: 1).pix? }
+
+            it { is_expected.to be_falsy }
+          end
+        end
       end
     end
   end
