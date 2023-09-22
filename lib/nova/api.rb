@@ -30,6 +30,8 @@ require "nova/api/resource/write_off"
 
 require "nova/api/resource/permission"
 
+require "nova/api/resource/webhook"
+
 require "nova/api/resource/response/current_asset_statement"
 
 require "nova/api/search_params/apportionment"
@@ -110,6 +112,10 @@ module Nova
 
       def third_parties
         Nova::API::Resource::ThirdParty
+      end
+
+      def webhooks
+        Nova::API::Resource::Webhook
       end
     end
   end

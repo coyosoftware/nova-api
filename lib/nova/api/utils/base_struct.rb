@@ -30,13 +30,13 @@ module Nova
         protected
 
         def self.initialize_empty_model_with_id(klass, id, additional_attributes = {})
-          data = klass.schema.type.keys.map do |field|
-            name = field.name
-
-            value_for_field(name, additional_attributes[name], field)
+          values = Hash.new.tap do |hash|
+            klass.schema.type.keys.each do |field|
+              hash[field.name] = value_for_field(additional_attributes[field.name], field)
+            end
           end
 
-          klass.new(Hash[*data.flatten].merge(id: id))
+          klass.new(values.merge(id: id))
         end
 
         private
@@ -49,12 +49,12 @@ module Nova
           value.respond_to?(:allowed_attributes) ?  value.allowed_attributes : value
         end
 
-        def self.value_for_field(name, override_value, field)
-          return [name, override_value] if override_value
+        def self.value_for_field(override_value, field)
+          return override_value if override_value
 
           type = field.type
 
-          type.optional? ? [name, nil] :  [name, generate_valid_value_for(type)]
+          type.optional? ? nil :  generate_valid_value_for(type)
         end
 
         def self.generate_valid_value_for(type)

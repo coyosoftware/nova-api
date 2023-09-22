@@ -97,4 +97,10 @@ RSpec.describe Nova::API do
       expect(Nova::API::Client.new.third_parties).to eq(Nova::API::Resource::ThirdParty)
     end
   end
+
+  describe "#webhooks" do
+    it 'returns the Nova::API::Resource::Webhook class' do
+      expect(Nova::API::Client.new.webhooks).to eq(Nova::API::Resource::Webhook)
+    end
+  end
 end
