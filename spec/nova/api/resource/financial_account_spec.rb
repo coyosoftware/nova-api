@@ -16,6 +16,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     it { is_expected.to have_attribute(:financial_account, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:income, Dry::Types['strict.bool'].optional) }
     it { is_expected.to have_attribute(:outcome, Dry::Types['strict.bool'].optional) }
+    it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
     it { is_expected.to have_attribute(:children, Dry::Types['strict.array'].of(Nova::API::Resource::FinancialAccount).optional) }
   end
 

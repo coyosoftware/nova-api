@@ -22,6 +22,7 @@ module Nova
         attribute? :financial_account, Dry::Types['coercible.string'].optional
         attribute? :income, Dry::Types['strict.bool'].optional
         attribute? :outcome, Dry::Types['strict.bool'].optional
+        attribute? :active, Dry::Types['strict.bool'].optional
         attribute? :children, Dry::Types['strict.array'].of(Nova::API::Resource::FinancialAccount).optional
 
         def self.endpoint

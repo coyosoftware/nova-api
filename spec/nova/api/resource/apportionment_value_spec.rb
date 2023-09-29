@@ -15,6 +15,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
     it { is_expected.to have_attribute(:name, Dry::Types['coercible.string']) }
     it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
     it { is_expected.to have_attribute(:apportionment_id, Dry::Types['coercible.integer']) }
+    it { is_expected.to have_attribute(:apportionment_name, Dry::Types['coercible.string']) }
   end
 
   describe '.endpoint' do

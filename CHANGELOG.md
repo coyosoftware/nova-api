@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2023-09-29
+
+### Added
+
+- Apportionment name to ApportionmentValue class
+- Active flag to FinancialAccount class
+
 ## [1.1.0] - 2023-09-22
 
 ### Added
@@ -101,7 +108,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Apportionment related stuff
 
-[unreleased]: https://github.com/coyosoftware/nova-api/compare/1.1.0...HEAD
+[unreleased]: https://github.com/coyosoftware/nova-api/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/coyosoftware/nova-api/releases/tag/1.2.0
 [1.1.0]: https://github.com/coyosoftware/nova-api/releases/tag/1.1.0
 [1.0.0]: https://github.com/coyosoftware/nova-api/releases/tag/1.0.0
 [0.8.0]: https://github.com/coyosoftware/nova-api/releases/tag/0.8.0

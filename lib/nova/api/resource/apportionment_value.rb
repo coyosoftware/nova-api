@@ -8,6 +8,7 @@ module Nova
         attribute :name, Dry::Types['coercible.string']
         attribute? :active, Dry::Types['strict.bool'].optional
         attribute? :apportionment_id, Dry::Types['coercible.integer']
+        attribute? :apportionment_name, Dry::Types['coercible.string']
 
         def self.endpoint(apportionment_id)
           "/api/apportionments/#{apportionment_id}/apportionment_values"
