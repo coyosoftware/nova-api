@@ -9,8 +9,15 @@ RSpec.describe Nova::API::Resource::Company do
   describe 'attributes' do
     subject { described_class }
 
+    it { is_expected.to have_attribute(:active, Dry::Types['strict.bool'].optional) }
+    it { is_expected.to have_attribute(:address, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:id, Dry::Types['coercible.integer'].optional) }
+    it { is_expected.to have_attribute(:identification, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:name, Dry::Types['coercible.string'].optional) }
+    it { is_expected.to have_attribute(:phone, Dry::Types['coercible.string'].optional) }
+    it { is_expected.to have_attribute(:social_contract_date, Dry::Types['coercible.string'].constrained(format: described_class::DATE_REGEX)) }
+    it { is_expected.to have_attribute(:social_contract_number, Dry::Types['coercible.string'].optional) }
+    it { is_expected.to have_attribute(:state_inscription, Dry::Types['coercible.string'].optional) }
     it { is_expected.to have_attribute(:trading_name, Dry::Types['coercible.string'].optional) }
   end
 
