@@ -10,7 +10,7 @@ module Nova
         attribute? :identification, Dry::Types['coercible.string'].optional
         attribute? :name, Dry::Types['coercible.string'].optional
         attribute? :phone, Dry::Types['coercible.string'].optional
-        attribute? :social_contract_date, Dry::Types['coercible.string'].constrained(format: DATE_REGEX)
+        attribute? :social_contract_date, Dry::Types['coercible.string'].constrained(format: DATE_REGEX).optional
         attribute? :social_contract_number, Dry::Types['coercible.string'].optional
         attribute? :state_inscription, Dry::Types['coercible.string'].optional
         attribute? :trading_name, Dry::Types['coercible.string'].optional
