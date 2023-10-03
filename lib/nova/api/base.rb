@@ -9,7 +9,8 @@ module Nova
       format :json
 
       SCHEME = 'https'
-      HOST = 'nova.money'
+      PRODUCTION_HOST = 'nova.money'
+      STAGING_HOST = 'staging.nova.money'
 
       def self.endpoint
         raise EndpointNotConfiguredError, 'Each class must implement its own endpoint'
@@ -18,7 +19,9 @@ module Nova
       def self.base_url
         raise Nova::API::MissingSubdomainError, 'The subdomain must be informed' if configuration.subdomain.nil? || configuration.subdomain.empty?
 
-        "#{SCHEME}://#{configuration.subdomain}.#{HOST}"
+        host = configuration.use_staging? ? STAGING_HOST : PRODUCTION_HOST
+
+        "#{SCHEME}://#{configuration.subdomain}.#{host}"
       end
 
       def endpoint
