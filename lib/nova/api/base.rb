@@ -46,6 +46,8 @@ module Nova
       def do_delete(endpoint)
         set_base_uri
 
+        Kernel.p "DELETE #{authorization_header}"
+
         response = self.class.delete(endpoint, headers: authorization_header)
 
         Nova::API::Response.build(response)
@@ -53,6 +55,8 @@ module Nova
 
       def do_patch(endpoint, data)
         set_base_uri
+
+        Kernel.p "PATCH #{authorization_header}"
 
         if data.nil? || data.empty?
           response = self.class.patch(endpoint, headers: authorization_header)
@@ -71,6 +75,8 @@ module Nova
       def do_post(endpoint, data)
         set_base_uri
 
+        Kernel.p "POST #{authorization_header}"
+
         response = self.class.post(endpoint, body: data, headers: authorization_header)
 
         Nova::API::Response.build(response, self)
@@ -85,6 +91,8 @@ module Nova
       def self.perform_get(endpoint, query, headers = {})
         set_base_uri
 
+        Kernel.p "GET #{headers.merge(authorization_header)}"
+
         response =
           if query
             self.get(endpoint, query: query, headers: headers.merge(authorization_header))
@@ -94,7 +102,7 @@ module Nova
       end
 
       def self.authorization_header
-        { 'Persistent-Token': configuration.api_key }
+        { 'Persistent-Token': configuration.api_key }.dup
       end
       def_delegator self, :authorization_header
 
