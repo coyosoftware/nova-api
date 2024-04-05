@@ -46,7 +46,7 @@ module Nova
       def do_delete(endpoint)
         set_base_uri
 
-        Kernel.p "[NOVA-API] Issuing DELETE to #{endpoint}, headers: #{authorization_header}" if configuration.debug?
+        Kernel.p "[NOVA-API] Issuing DELETE to #{base_uri} (#{base_url}) #{endpoint}, headers: #{authorization_header}" if configuration.debug?
 
         response = self.class.delete(endpoint, headers: authorization_header)
 
@@ -56,7 +56,7 @@ module Nova
       def do_patch(endpoint, data)
         set_base_uri
 
-        Kernel.p "[NOVA-API] Issuing PATCH to #{endpoint}, headers: #{authorization_header}" if configuration.debug?
+        Kernel.p "[NOVA-API] Issuing PATCH to #{base_uri} (#{base_url}) #{endpoint}, headers: #{authorization_header}" if configuration.debug?
 
         if data.nil? || data.empty?
           response = self.class.patch(endpoint, headers: authorization_header)
@@ -75,7 +75,7 @@ module Nova
       def do_post(endpoint, data)
         set_base_uri
 
-        Kernel.p "[NOVA-API] Issuing POST to #{endpoint}, headers: #{authorization_header}" if configuration.debug?
+        Kernel.p "[NOVA-API] Issuing POST to #{base_uri} (#{base_url}) #{endpoint}, headers: #{authorization_header}" if configuration.debug?
 
         response = self.class.post(endpoint, body: data, headers: authorization_header)
 
@@ -91,7 +91,7 @@ module Nova
       def self.perform_get(endpoint, query, headers = {})
         set_base_uri
 
-        Kernel.p "[NOVA-API] Issuing GET to #{endpoint}, headers: #{headers.merge(authorization_header)}" if configuration.debug?
+        Kernel.p "[NOVA-API] Issuing GET to #{base_uri} (#{base_url}) #{endpoint}, headers: #{headers.merge(authorization_header)}" if configuration.debug?
 
         response =
           if query
