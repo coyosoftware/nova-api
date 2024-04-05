@@ -5,7 +5,7 @@ module Nova
       attr_reader :subdomain
 
       def subdomain=(value)
-        Kernel.p "Changed subdomain from #{@subdomain} to #{value}" if debug?
+        Kernel.p "[NOVA-API] Changed subdomain from #{@subdomain} to #{value}" if debug?
 
         @subdomain = value
       end
