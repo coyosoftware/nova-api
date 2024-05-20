@@ -29,7 +29,7 @@ RSpec.describe Nova::API::Resource::Webhook do
     subject { described_class.create(parameters) }
 
     it 'issues a post to the webhook create endpoint' do
-      expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:post).with("#{described_class.base_url}#{described_class.endpoint}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
       subject
     end
@@ -100,7 +100,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.update(id, parameters) }
 
       it 'issues a patch to the webhook update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject
       end
@@ -168,7 +168,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.destroy(id) }
 
       it 'issues a delete to the webhook delete endpoint' do
-        expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:delete).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", headers: authorization_header, format: :json).and_return(response)
 
         subject
       end
@@ -229,7 +229,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.restore(id) }
 
       it 'issues a patch to the webhook restore endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}/restore", headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}/restore", headers: authorization_header, format: :json).and_return(response)
 
         subject
       end
@@ -298,7 +298,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.new(parameters) }
 
       it 'issues a post to the webhook create endpoint' do
-        expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:post).with("#{described_class.base_url}#{described_class.endpoint}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject.save
       end
@@ -357,7 +357,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a patch to the webhook update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject.save
       end
@@ -428,7 +428,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a patch to the webhook update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject.update
       end
@@ -499,7 +499,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a delete to the webhook delete endpoint' do
-        expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:delete).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", headers: authorization_header, format: :json).and_return(response)
 
         subject.destroy
       end
@@ -572,7 +572,7 @@ RSpec.describe Nova::API::Resource::Webhook do
       subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a patch to the webhook restore endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}/restore", headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}/restore", headers: authorization_header, format: :json).and_return(response)
 
         subject.restore
       end

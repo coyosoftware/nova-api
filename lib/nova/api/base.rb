@@ -4,10 +4,6 @@ require 'forwardable'
 module Nova
   module API
     class Base < Nova::API::Utils::BaseStruct
-      include HTTParty
-
-      format :json
-
       SCHEME = 'https'
       PRODUCTION_HOST = 'nova.money'
       STAGING_HOST = 'staging.nova.money'
@@ -23,6 +19,7 @@ module Nova
 
         "#{SCHEME}://#{configuration.subdomain}.#{host}"
       end
+      def_delegator self, :base_url
 
       def endpoint
         raise EndpointNotConfiguredError, 'Each class must implement its own endpoint'
@@ -31,53 +28,47 @@ module Nova
       protected
 
       def self.do_get_search(endpoint, query, object = self)
-        response = perform_get(endpoint, query, headers)
+        response = perform_get(endpoint, query)
 
         Nova::API::ListResponse.build(response, object)
       end
 
       def self.do_get(endpoint, query, object = self)
-        response = perform_get(endpoint, query, headers)
+        response = perform_get(endpoint, query)
 
         Nova::API::Response.build(response, object)
       end
       def_delegator self, :do_get
 
       def do_delete(endpoint)
-        set_base_uri
+        Kernel.p "[NOVA-API] Issuing DELETE to #{base_url}#{endpoint}, headers: #{authorization_header}" if configuration.debug?
 
-        Kernel.p "[NOVA-API] Issuing DELETE to #{self.class.base_uri}#{endpoint}, headers: #{authorization_header}" if configuration.debug?
-
-        response = self.class.delete(endpoint, headers: authorization_header)
+        response = HTTParty.delete("#{base_url}#{endpoint}", headers: authorization_header, format: :json)
 
         Nova::API::Response.build(response)
       end
 
       def do_patch(endpoint, data)
-        set_base_uri
-
-        Kernel.p "[NOVA-API] Issuing PATCH to #{self.class.base_uri}#{endpoint}, headers: #{authorization_header}" if configuration.debug?
+        Kernel.p "[NOVA-API] Issuing PATCH to #{base_url}#{endpoint}, headers: #{authorization_header}" if configuration.debug?
 
         if data.nil? || data.empty?
-          response = self.class.patch(endpoint, headers: authorization_header)
+          response = HTTParty.patch("#{base_url}#{endpoint}", headers: authorization_header, format: :json)
 
           Nova::API::Response.build(response)
         else
           payload = data.dup
           payload.delete(:id)
 
-          response = self.class.patch(endpoint, body: payload, headers: authorization_header)
+          response = HTTParty.patch("#{base_url}#{endpoint}", body: payload, headers: authorization_header, format: :json)
 
           Nova::API::Response.build(response, self)
         end
       end
 
       def do_post(endpoint, data)
-        set_base_uri
+        Kernel.p "[NOVA-API] Issuing POST to #{base_url}#{endpoint}, headers: #{authorization_header}" if configuration.debug?
 
-        Kernel.p "[NOVA-API] Issuing POST to #{self.class.base_uri}#{endpoint}, headers: #{authorization_header}" if configuration.debug?
-
-        response = self.class.post(endpoint, body: data, headers: authorization_header)
+        response = HTTParty.post("#{base_url}#{endpoint}", body: data, headers: authorization_header, format: :json)
 
         Nova::API::Response.build(response, self)
       end
@@ -89,15 +80,13 @@ module Nova
       private
 
       def self.perform_get(endpoint, query, headers = {})
-        set_base_uri
-
-        Kernel.p "[NOVA-API] Issuing GET to #{base_uri}#{endpoint}, headers: #{headers.merge(authorization_header)}" if configuration.debug?
+        Kernel.p "[NOVA-API] Issuing GET to #{base_url}#{endpoint}, headers: #{headers.merge(authorization_header)}" if configuration.debug?
 
         response =
           if query
-            self.get(endpoint, query: query, headers: headers.merge(authorization_header))
+            HTTParty.get("#{base_url}#{endpoint}", query: query, headers: headers.merge(authorization_header), format: :json)
           else
-            self.get(endpoint, headers: headers.merge(authorization_header))
+            HTTParty.get("#{base_url}#{endpoint}", headers: headers.merge(authorization_header), format: :json)
           end
       end
 
@@ -110,17 +99,6 @@ module Nova
         Nova::API.configuration
       end
       def_delegator self, :configuration
-
-      def self.set_base_uri
-        if configuration.debug?
-          debug_output $stdout
-
-          Kernel.p "[NOVA-API] Changing base URI from #{base_uri} to #{base_url}"
-        end
-
-        default_options[:base_uri] = base_url
-      end
-      def_delegator self, :set_base_uri
     end
   end
 end

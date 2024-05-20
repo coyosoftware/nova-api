@@ -45,7 +45,7 @@ RSpec.describe Nova::API::Resource::Cash do
     subject { described_class.list(Nova::API::SearchParams::CurrentAsset.new parameters) }
 
     it 'issues a get to the cash list endpoint' do
-      expect(described_class).to receive(:get).with(described_class.endpoint, query: parameters, headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}", query: parameters, headers: authorization_header, format: :json).and_return(response)
 
       subject
     end

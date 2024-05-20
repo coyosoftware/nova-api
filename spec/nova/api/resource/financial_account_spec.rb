@@ -85,7 +85,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     subject { described_class.list }
 
     it 'issues a get to the financial account list endpoint' do
-      expect(described_class).to receive(:get).with(described_class.endpoint, headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}", headers: authorization_header, format: :json).and_return(response)
 
       subject
     end
@@ -200,7 +200,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     subject { described_class.income_accounts }
 
     it 'issues a get to the income financial account list endpoint' do
-      expect(described_class).to receive(:get).with("#{described_class.endpoint}/income_accounts", headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}/income_accounts", headers: authorization_header, format: :json).and_return(response)
 
       subject
     end
@@ -320,7 +320,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     subject { described_class.payable_accounts }
 
     it 'issues a get to the payable financial account list endpoint' do
-      expect(described_class).to receive(:get).with("#{described_class.endpoint}/payable_accounts", headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}/payable_accounts", headers: authorization_header, format: :json).and_return(response)
 
       subject
     end
@@ -439,7 +439,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     subject { described_class.receivable_accounts }
 
     it 'issues a get to the receivable financial account list endpoint' do
-      expect(described_class).to receive(:get).with("#{described_class.endpoint}/receivable_accounts", headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}/receivable_accounts", headers: authorization_header, format: :json).and_return(response)
 
       subject
     end
@@ -514,7 +514,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
     subject { described_class.create(parameters) }
 
     it 'issues a post to the financial account create endpoint' do
-      expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:post).with("#{described_class.base_url}#{described_class.endpoint}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
       subject
     end
@@ -585,7 +585,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
       subject { described_class.update(id, parameters) }
 
       it 'issues a patch to the financial account update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject
       end
@@ -653,7 +653,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
       subject { described_class.destroy(id) }
 
       it 'issues a delete to the financial account delete endpoint' do
-        expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:delete).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", headers: authorization_header, format: :json).and_return(response)
 
         subject
       end
@@ -724,7 +724,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
       subject { described_class.new(parameters) }
 
       it 'issues a post to the financial account create endpoint' do
-        expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:post).with("#{described_class.base_url}#{described_class.endpoint}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject.save
       end
@@ -784,7 +784,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
       subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a patch to the financial account update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject.save
       end
@@ -856,7 +856,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
       subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a patch to the financial account update endpoint' do
-        expect(described_class).to receive(:patch).with("#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:patch).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
         subject.update
       end
@@ -927,7 +927,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
       subject { described_class.new(parameters.merge(id: id)) }
 
       it 'issues a delete to the financial account delete endpoint' do
-        expect(described_class).to receive(:delete).with("#{described_class.endpoint}/#{id}", headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:delete).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", headers: authorization_header, format: :json).and_return(response)
 
         subject.destroy
       end

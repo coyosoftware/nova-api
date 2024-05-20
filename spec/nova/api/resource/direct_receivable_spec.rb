@@ -100,7 +100,7 @@ RSpec.describe Nova::API::Resource::DirectReceivable do
     subject { described_class.create(parameters) }
 
     it 'issues a post to the receivable save direct endpoint' do
-      expect(described_class).to receive(:post).with(described_class.endpoint, body: parameters, headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:post).with("#{described_class.base_url}#{described_class.endpoint}", body: parameters, headers: authorization_header, format: :json).and_return(response)
 
       subject
     end

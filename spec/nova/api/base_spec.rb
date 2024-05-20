@@ -24,7 +24,7 @@ RSpec.describe Nova::API::Base do
       context 'and the staging flag is set' do
         before { Nova::API.configure { |config| config.use_staging = true } }
 
-        it 'returns the api stagingschema with subdomain and staging host' do
+        it 'returns the api staging schema with subdomain and staging host' do
           expect(described_class.base_url).to eq("#{Nova::API::Base::SCHEME}://#{Nova::API.configuration.subdomain}.#{Nova::API::Base::STAGING_HOST}")
         end
       end

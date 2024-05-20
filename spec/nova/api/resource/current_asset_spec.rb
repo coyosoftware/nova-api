@@ -50,7 +50,7 @@ RSpec.describe Nova::API::Resource::CurrentAsset do
     subject { described_class.statement(Nova::API::SearchParams::CurrentAssetStatement.new parameters) }
 
     it 'issues a get to the current asset statement endpoint' do
-      expect(described_class).to receive(:get).with("#{described_class.endpoint}/statement", query: parameters, headers: authorization_header).and_return(response)
+      expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}/statement", query: parameters, headers: authorization_header, format: :json).and_return(response)
 
       subject
     end
@@ -155,7 +155,7 @@ RSpec.describe Nova::API::Resource::CurrentAsset do
       subject { described_class.new(parameters.merge(id: current_asset_id)) }
 
       it 'issues a get to the current asset statement endpoint' do
-        expect(described_class).to receive(:get).with("#{described_class.endpoint}/statement", query: query_params, headers: authorization_header).and_return(response)
+        expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}/statement", query: query_params, headers: authorization_header, format: :json).and_return(response)
 
         subject.statement(initial_date, final_date)
       end
