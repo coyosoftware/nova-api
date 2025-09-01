@@ -74,6 +74,12 @@ RSpec.describe Nova::API do
     end
   end
 
+  describe "#installments" do
+    it 'returns the Nova::API::Resource::Installment class' do
+      expect(Nova::API::Client.new.installments).to eq(Nova::API::Resource::Installment)
+    end
+  end
+
   describe "#payables" do
     it 'returns the Nova::API::Resource::Payable class' do
       expect(Nova::API::Client.new.payables).to eq(Nova::API::Resource::Payable)

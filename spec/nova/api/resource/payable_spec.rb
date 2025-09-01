@@ -50,6 +50,97 @@ RSpec.describe Nova::API::Resource::Payable do
     end
   end
 
+  describe '.find' do
+    let(:id) { 16 }
+    let(:data) do
+      {
+        additional_information: nil, apportionments: [{ apportionment_value_ids: [1,2,3], value: 10.45 }], company_id: 20, date: '2021-03-12',
+        document_type: Nova::API::Resource::Bill::DOCUMENT_TYPE::INVOICE, document_number: '11198',
+        due_type: Nova::API::Resource::Bill::DUE_TYPE::MONTHLY, financial_accounts: [{ financial_account_id: 22, value: 10.45 }],
+        first_due_date: '2021-03-12', forecast: false, id:, identifier: 'foobar',
+        installments: [{ due_date: '2021-03-12', id: 11, number: 1, value: 10.45 }], installments_number: 1, third_party_id: 38,
+        total_value: 10.45
+      }
+    end
+    let(:response) { double(:response, success?: true, parsed_response: data, code: 200) }
+
+    subject { described_class.find(id) }
+
+    it 'issues a get to the payable show endpoint' do
+      expect(HTTParty).to receive(:get).with("#{described_class.base_url}#{described_class.endpoint}/#{id}", headers: authorization_header, format: :json).and_return(response)
+
+      subject
+    end
+
+    context 'with a successful response' do
+      before { stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 200, body: JSON.generate(data)) }
+
+      it 'returns the response object' do
+        expect(subject).to be_a(Nova::API::Response)
+      end
+
+      it 'returns no error' do
+        response = subject
+
+        expect(response.errors).to be_empty
+      end
+
+      it 'returns the records' do
+        response = subject
+
+        expect(response.record).to be_a(Nova::API::Resource::Payable)
+
+        expect(response.record.additional_information).to eq(data[:additional_information])
+
+        expect(response.record.apportionments).to all(be_a(Nova::API::Resource::Payable::Apportionment))
+        expect(response.record.apportionments[0].apportionment_value_ids).to match_array(data[:apportionments][0][:apportionment_value_ids])
+        expect(response.record.apportionments[0].value).to eq(data[:apportionments][0][:value])
+
+        expect(response.record.company_id).to eq(data[:company_id])
+        expect(response.record.date).to eq(data[:date])
+        expect(response.record.document_type).to eq(data[:document_type])
+        expect(response.record.document_number).to eq(data[:document_number])
+        expect(response.record.due_type).to eq(data[:due_type])
+
+        expect(response.record.financial_accounts).to all(be_a(Nova::API::Resource::Payable::FinancialAccount))
+        expect(response.record.financial_accounts[0].financial_account_id).to eq(data[:financial_accounts][0][:financial_account_id])
+        expect(response.record.financial_accounts[0].value).to eq(data[:financial_accounts][0][:value])
+
+        expect(response.record.first_due_date).to eq(data[:first_due_date])
+        expect(response.record.forecast).to eq(data[:forecast])
+        expect(response.record.id).to eq(data[:id])
+        expect(response.record.identifier).to eq(data[:identifier])
+
+        expect(response.record.installments).to all(be_a(Nova::API::Resource::Installment))
+        expect(response.record.installments[0].due_date).to eq(data[:installments][0][:due_date])
+        expect(response.record.installments[0].id).to eq(data[:installments][0][:id])
+        expect(response.record.installments[0].number).to eq(data[:installments][0][:number])
+        expect(response.record.installments[0].value).to eq(data[:installments][0][:value])
+
+        expect(response.record.installments_number).to eq(data[:installments_number])
+        expect(response.record.third_party_id).to eq(data[:third_party_id])
+        expect(response.record.total_value).to eq(data[:total_value])
+      end
+    end
+
+    context 'with an error response' do
+      let(:errors) { ['foo', 'bar'] }
+
+      before { stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate({ errors: errors })) }
+
+      it 'returns the response object' do
+        expect(subject).to be_a(Nova::API::Response)
+      end
+
+      it 'returns the errors' do
+        response = subject
+
+        expect(response.record).to be_a(described_class)
+        expect(response.errors).to match_array(errors)
+      end
+    end
+  end
+
   describe '.list' do
     let(:parameters) { { identifier: 'foobar' } }
     let(:data) do

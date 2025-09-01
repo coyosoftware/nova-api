@@ -82,12 +82,11 @@ module Nova
       def self.perform_get(endpoint, query, headers = {})
         Kernel.p "[NOVA-API] Issuing GET to #{base_url}#{endpoint}, headers: #{headers.merge(authorization_header)}" if configuration.debug?
 
-        response =
-          if query
-            HTTParty.get("#{base_url}#{endpoint}", query: query, headers: headers.merge(authorization_header), format: :json)
-          else
-            HTTParty.get("#{base_url}#{endpoint}", headers: headers.merge(authorization_header), format: :json)
-          end
+        if query
+          HTTParty.get("#{base_url}#{endpoint}", query: query, headers: headers.merge(authorization_header), format: :json)
+        else
+          HTTParty.get("#{base_url}#{endpoint}", headers: headers.merge(authorization_header), format: :json)
+        end
       end
 
       def self.authorization_header

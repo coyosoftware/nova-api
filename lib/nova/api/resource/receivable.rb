@@ -14,6 +14,10 @@ module Nova
           do_get_search(endpoint, parameters.to_h)
         end
 
+        def self.find(id)
+          do_get("#{endpoint}/#{id}", nil, initialize_empty_model_with_id(self, id, date: Date.today.iso8601, first_due_date: Date.today.iso8601))
+        end
+
         def self.create(parameters)
           model = new parameters
 

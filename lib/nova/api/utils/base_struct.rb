@@ -46,7 +46,13 @@ module Nova
         end
 
         def permit_value(key, value)
-          value.respond_to?(:allowed_attributes) ?  value.allowed_attributes : value
+          if value.respond_to?(:allowed_attributes)
+            value.allowed_attributes
+          elsif value.respond_to?(:attributes)
+            value.attributes
+          else
+            value
+          end
         end
 
         def self.value_for_field(override_value, field)

@@ -22,9 +22,7 @@ module Nova
         errors ||= extract_error_from_response('errors', parsed_response)
         errors ||= []
 
-        if object
-          record = object.class.new(object.attributes.merge(parsed_response))
-        end
+        record = object.class.new(object.attributes.merge(parsed_response)) if object
 
         new(success: success, errors: errors, record: record, status: status)
       end

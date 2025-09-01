@@ -98,6 +98,10 @@ module Nova
         Nova::API::Resource::FinancialAccount
       end
 
+      def installments
+        Nova::API::Resource::Installment
+      end
+
       def payables
         Nova::API::Resource::Payable
       end
