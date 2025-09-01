@@ -1,10 +1,10 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.0.1
+  ruby: circleci/ruby@2.5.3
 jobs:
   test:
     docker:
-      - image: cimg/ruby:3.0.6-node
+      - image: cimg/ruby:3.2.9-node
     steps:
       - checkout
       - ruby/install-deps
@@ -13,7 +13,7 @@ jobs:
           command: bundle exec rake
   deploy:
     docker:
-      - image: cimg/ruby:3.0.6-node
+      - image: cimg/ruby:3.2.9-node
     steps:
       - checkout
       - ruby/install-deps
