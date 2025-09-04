@@ -65,12 +65,12 @@ module Nova
         end
       end
 
-      def do_post(endpoint, data)
+      def do_post(endpoint, data, object = self)
         Kernel.p "[NOVA-API] Issuing POST to #{base_url}#{endpoint}, headers: #{authorization_header}" if configuration.debug?
 
         response = HTTParty.post("#{base_url}#{endpoint}", body: data, headers: authorization_header, format: :json)
 
-        Nova::API::Response.build(response, self)
+        Nova::API::Response.build(response, object)
       end
 
       def protect_operation_from_missing_value(attribute = :id)

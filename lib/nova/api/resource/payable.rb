@@ -34,6 +34,12 @@ module Nova
           model.destroy
         end
 
+        def self.save_invoice(id, parameters)
+          model = initialize_empty_model_with_id(self, id, date: Date.today.iso8601, first_due_date: Date.today.iso8601)
+
+          model.save_invoice(parameters)
+        end
+
         def endpoint
           protect_operation_from_missing_value
 
@@ -58,6 +64,14 @@ module Nova
           protect_operation_from_missing_value
 
           do_delete("#{endpoint}")
+        end
+
+        def save_invoice(parameters)
+          protect_operation_from_missing_value
+
+          invoice = Invoice.new(parameters.merge(bill_id: id))
+
+          do_post("#{endpoint}/invoices", invoice.allowed_attributes, invoice)
         end
       end
     end

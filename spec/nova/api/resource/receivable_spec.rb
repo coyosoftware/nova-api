@@ -486,7 +486,7 @@ RSpec.describe Nova::API::Resource::Receivable do
           expect(subject).to be_a(Nova::API::Response)
         end
 
-        it 'returns the third party with its errors' do
+        it 'returns the receivable with its errors' do
           response = subject
 
           expect(response.record).to be_a(described_class)
@@ -554,6 +554,91 @@ RSpec.describe Nova::API::Resource::Receivable do
 
         it 'returns no record' do
           expect(subject.record).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '.save_invoice' do
+    let(:parameters) do
+      {
+        danfe_url: 'https://invoice.danfe/url', key: 'abc123', number: '33', series: '1', status: Nova::API::Resource::Invoice::STATUS::AUTHORIZED,
+        type: Nova::API::Resource::Invoice::TYPE::PRODUCT, url: 'https://invoice.url/pdf', xml_url: 'https://invoice.url/xml'
+      }
+    end
+
+    context 'when the id is not set' do
+      it 'raises the missing id error' do
+        expect { described_class.save_invoice(nil, parameters) }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+      end
+    end
+
+    context 'when the id is set' do
+      let(:id) { 99 }
+      let(:response) { double(:response, success?: true, parsed_response: { id: id }, code: 200) }
+
+      subject { described_class.save_invoice(id, parameters) }
+
+      it 'issues a post to the receivable invoice endpoint' do
+        expect(HTTParty).to receive(:post).with("#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices", body: parameters, headers: authorization_header, format: :json).and_return(response)
+
+        subject
+      end
+
+      context 'with a successful response' do
+        before { stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 200, body: JSON.generate({ id: id })) }
+
+        it 'returns the response object' do
+          expect(subject).to be_a(Nova::API::Response)
+        end
+
+        it 'returns no error' do
+          response = subject
+
+          expect(response.errors).to be_empty
+        end
+
+        it 'returns the saved invoice' do
+          response = subject
+
+          expect(response.record).to be_a(Nova::API::Resource::Invoice)
+
+          parameters.keys.each do |field|
+            data = response.record.send(field.to_sym)
+
+            if data.is_a? Array
+              data.each_with_index do |data, index|
+                if data.respond_to? :attributes
+                  expect(data.attributes).to eq(parameters[field][index])
+                else
+                  expect(data).to eq(parameters[field][index])
+                end
+              end
+            else
+              expect(data).to eq(parameters[field])
+            end
+          end
+
+          expect(response.record.id).to eq(id)
+        end
+      end
+
+      context 'with an error response' do
+        let(:errors) { ['foo', 'bar'] }
+
+        before do
+          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 400, body: JSON.generate({ errors: errors }))
+        end
+
+        it 'returns the response object' do
+          expect(subject).to be_a(Nova::API::Response)
+        end
+
+        it 'returns the invoice with its errors' do
+          response = subject
+
+          expect(response.record).to be_a(Nova::API::Resource::Invoice)
+          expect(response.errors).to match_array(errors)
         end
       end
     end
@@ -975,6 +1060,91 @@ RSpec.describe Nova::API::Resource::Receivable do
           response = subject.destroy
 
           expect(response.record).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#save_invoice' do
+    let(:parameters) do
+      {
+        danfe_url: 'https://invoice.danfe/url', key: 'abc123', number: '33', series: '1', status: Nova::API::Resource::Invoice::STATUS::AUTHORIZED,
+        type: Nova::API::Resource::Invoice::TYPE::PRODUCT, url: 'https://invoice.url/pdf', xml_url: 'https://invoice.url/xml'
+      }
+    end
+
+    context 'when the id is not set' do
+      subject { described_class.initialize_empty_model_with_id(described_class, nil, date: Date.today.iso8601, first_due_date: Date.today.iso8601) }
+
+      it 'raises the missing id error' do
+        expect { subject.save_invoice(parameters) }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+      end
+    end
+
+    context 'when the id is set' do
+      let(:id) { 99 }
+      let(:response) { double(:response, success?: true, parsed_response: { id: id }, code: 200) }
+
+      subject { described_class.initialize_empty_model_with_id(described_class, id, date: Date.today.iso8601, first_due_date: Date.today.iso8601) }
+
+      it 'issues a post to the receivable invoices endpoint' do
+        expect(HTTParty).to receive(:post).with("#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices", body: parameters, headers: authorization_header, format: :json).and_return(response)
+
+        subject.save_invoice(parameters)
+      end
+
+      context 'with a successful response' do
+        before { stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 200, body: JSON.generate({ id: id })) }
+
+        it 'returns the response object' do
+          expect(subject.save_invoice(parameters)).to be_a(Nova::API::Response)
+        end
+
+        it 'returns no error' do
+          response = subject.save_invoice(parameters)
+
+          expect(response.errors).to be_empty
+        end
+
+        it 'returns the saved invoice' do
+          response = subject.save_invoice(parameters)
+
+          expect(response.record).to be_a(Nova::API::Resource::Invoice)
+
+          parameters.keys.each do |field|
+            data = response.record.send(field.to_sym)
+
+            if data.is_a? Array
+              data.each_with_index do |data, index|
+                if data.respond_to? :attributes
+                  expect(data.attributes).to eq(parameters[field][index])
+                else
+                  expect(data).to eq(parameters[field][index])
+                end
+              end
+            else
+              expect(data).to eq(parameters[field])
+            end
+          end
+
+          expect(response.record.id).to eq(id)
+        end
+      end
+
+      context 'with an error response' do
+        let(:errors) { ['foo', 'bar'] }
+
+        before { stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 400, body: JSON.generate({ errors: errors })) }
+
+        it 'returns the response object' do
+          expect(subject.save_invoice(parameters)).to be_a(Nova::API::Response)
+        end
+
+        it 'returns the invoice with its errors' do
+          response = subject.save_invoice(parameters)
+
+          expect(response.record).to be_a(Nova::API::Resource::Invoice)
+          expect(response.errors).to match_array(errors)
         end
       end
     end

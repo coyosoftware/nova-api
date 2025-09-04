@@ -14,6 +14,7 @@ require "nova/api/resource/installment"
 require "nova/api/resource/bill"
 require "nova/api/resource/payable"
 require "nova/api/resource/receivable"
+require "nova/api/resource/invoice"
 
 require "nova/api/resource/direct_bill"
 require "nova/api/resource/direct_payable"
