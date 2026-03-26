@@ -126,7 +126,7 @@ RSpec.describe Nova::API::Resource::Payable do
     context 'with an error response' do
       let(:errors) { ['foo', 'bar'] }
 
-      before { stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate({ errors: errors })) }
+      before { stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate(errors:)) }
 
       it 'returns the response object' do
         expect(subject).to be_a(Nova::API::Response)
@@ -263,7 +263,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -366,7 +366,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
       before do
         stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -476,7 +476,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -538,7 +538,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -624,7 +624,7 @@ RSpec.describe Nova::API::Resource::Payable do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -762,7 +762,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
         before do
           stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -836,7 +836,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -949,7 +949,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -1039,7 +1039,7 @@ RSpec.describe Nova::API::Resource::Payable do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -1130,7 +1130,7 @@ RSpec.describe Nova::API::Resource::Payable do
       context 'with an error response' do
         let(:errors) { ['foo', 'bar'] }
 
-        before { stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 400, body: JSON.generate({ errors: errors })) }
+        before { stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/invoices").to_return(status: 400, body: JSON.generate(errors:)) }
 
         it 'returns the response object' do
           expect(subject.save_invoice(parameters)).to be_a(Nova::API::Response)

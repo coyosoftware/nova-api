@@ -160,7 +160,7 @@ RSpec.describe Nova::API::Resource::Card do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do

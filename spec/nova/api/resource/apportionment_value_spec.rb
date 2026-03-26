@@ -69,7 +69,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
       before do
         stub_request(:post, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -137,7 +137,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -199,7 +199,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -262,7 +262,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}/reactivate").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -327,7 +327,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:post, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -385,7 +385,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -456,7 +456,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -525,7 +525,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -599,7 +599,7 @@ RSpec.describe Nova::API::Resource::ApportionmentValue do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint(apportionment_id)}/#{id}/reactivate").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do

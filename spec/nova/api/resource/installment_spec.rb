@@ -71,9 +71,7 @@ RSpec.describe Nova::API::Resource::Installment do
       context 'with an error response' do
         let(:errors) { ['foo', 'bar'] }
 
-        before do
-          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/write_off").to_return(status: 400, body: JSON.generate({ errors: errors }))
-        end
+        before { stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/write_off").to_return(status: 400, body: JSON.generate(errors:)) }
 
         it 'returns the response object' do
           expect(subject).to be_a(Nova::API::Response)
@@ -84,6 +82,63 @@ RSpec.describe Nova::API::Resource::Installment do
 
           expect(response.record).to be_a(Nova::API::Resource::Installment::WriteOffInstallment)
           expect(response.errors).to match_array(errors)
+        end
+      end
+    end
+  end
+
+  describe '.cancel_write_offs' do
+    context 'when the id is not set' do
+      subject { described_class.cancel_write_offs(nil) }
+
+      it 'raises the missing id error' do
+        expect { subject }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+      end
+    end
+
+    context 'when the id is set' do
+      let(:id) { 99 }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
+
+      subject { described_class.cancel_write_offs(id) }
+
+      it 'issues a delete to the installment write offs cancellation endpoint' do
+        expect(HTTParty).to receive(:delete).with("#{described_class.base_url}#{described_class.endpoint}/#{id}/cancel_write_offs", headers: authorization_header, format: :json).and_return(response)
+
+        subject
+      end
+
+      context 'with a successful response' do
+        before { stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}/cancel_write_offs").to_return(status: 200, body: nil) }
+
+        it 'returns the response object' do
+          expect(subject).to be_a(Nova::API::Response)
+        end
+
+        it 'returns no error' do
+          expect(subject.errors).to be_empty
+        end
+
+        it 'returns no record' do
+          expect(subject.record).to be_nil
+        end
+      end
+
+      context 'with an error response' do
+        let(:errors) { ['foo', 'bar'] }
+
+        before { stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}/cancel_write_offs").to_return(status: 400, body: JSON.generate(errors:)) }
+
+        it 'returns the response object' do
+          expect(subject).to be_a(Nova::API::Response)
+        end
+
+        it 'returns the errors' do
+          expect(subject.errors).to match_array(errors)
+        end
+
+        it 'returns no record' do
+          expect(subject.record).to be_nil
         end
       end
     end
@@ -141,9 +196,7 @@ RSpec.describe Nova::API::Resource::Installment do
       context 'with an error response' do
         let(:errors) { ['foo', 'bar'] }
 
-        before do
-          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/write_off").to_return(status: 400, body: JSON.generate({ errors: errors }))
-        end
+        before { stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}/#{id}/write_off").to_return(status: 400, body: JSON.generate(errors:)) }
 
         it 'returns the response object' do
           expect(subject.write_off(parameters)).to be_a(Nova::API::Response)
@@ -154,6 +207,65 @@ RSpec.describe Nova::API::Resource::Installment do
 
           expect(response.record).to be_a(Nova::API::Resource::Installment::WriteOffInstallment)
           expect(response.errors).to match_array(errors)
+        end
+      end
+    end
+  end
+
+  describe '#cancel_write_offs' do
+    context 'when the id is not set' do
+      subject { described_class.initialize_empty_model_with_id(described_class, nil, due_date: Date.today.iso8601) }
+
+      it 'raises the missing id error' do
+        expect { subject.cancel_write_offs }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+      end
+    end
+
+    context 'when the id is set' do
+      let(:id) { 99 }
+      let(:response) { double(:response, success?: true, parsed_response: { id: id }, code: 200) }
+
+      subject { described_class.initialize_empty_model_with_id(described_class, id, due_date: Date.today.iso8601) }
+
+      it 'issues a delete to the installment write offs cancellation endpoint' do
+        expect(HTTParty).to receive(:delete).with("#{described_class.base_url}#{described_class.endpoint}/#{id}/cancel_write_offs", headers: authorization_header, format: :json).and_return(response)
+
+        subject.cancel_write_offs
+      end
+
+      context 'with a successful response' do
+        before { stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}/cancel_write_offs").to_return(status: 200, body: nil) }
+
+        it 'returns the response object' do
+          expect(subject.cancel_write_offs).to be_a(Nova::API::Response)
+        end
+
+        it 'returns no error' do
+          response = subject.cancel_write_offs
+
+          expect(response.errors).to be_empty
+        end
+      end
+
+      context 'with an error response' do
+        let(:errors) { ['foo', 'bar'] }
+
+        before { stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}/cancel_write_offs").to_return(status: 400, body: JSON.generate(errors:)) }
+
+       it 'returns the response object' do
+          expect(subject.cancel_write_offs).to be_a(Nova::API::Response)
+        end
+
+        it 'returns the errors' do
+          response = subject.cancel_write_offs
+
+          expect(response.errors).to match_array(errors)
+        end
+
+        it 'returns no record' do
+          response = subject.cancel_write_offs
+
+          expect(response.record).to be_nil
         end
       end
     end

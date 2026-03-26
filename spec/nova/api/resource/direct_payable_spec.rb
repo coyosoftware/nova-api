@@ -146,7 +146,7 @@ RSpec.describe Nova::API::Resource::DirectPayable do
 
       before do
         stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do

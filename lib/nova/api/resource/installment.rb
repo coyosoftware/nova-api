@@ -51,10 +51,28 @@ module Nova
           model.write_off
         end
 
+        def self.cancel_write_offs(id)
+          model = initialize_empty_model_with_id(self, id, due_date: Date.today.iso8601)
+
+          model.cancel_write_offs
+        end
+
+        def endpoint
+          protect_operation_from_missing_value
+
+          "/api/installments/#{id}"
+        end
+
         def write_off(parameters)
           model = WriteOffInstallment.new(parameters.merge(id:))
 
           model.write_off
+        end
+
+        def cancel_write_offs
+          protect_operation_from_missing_value
+
+          do_delete("#{endpoint}/cancel_write_offs")
         end
       end
     end

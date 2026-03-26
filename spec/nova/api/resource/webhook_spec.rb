@@ -66,7 +66,7 @@ RSpec.describe Nova::API::Resource::Webhook do
 
       before do
         stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -135,7 +135,7 @@ RSpec.describe Nova::API::Resource::Webhook do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -195,7 +195,7 @@ RSpec.describe Nova::API::Resource::Webhook do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -256,7 +256,7 @@ RSpec.describe Nova::API::Resource::Webhook do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/restore").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/restore").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -334,7 +334,7 @@ RSpec.describe Nova::API::Resource::Webhook do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -391,7 +391,7 @@ RSpec.describe Nova::API::Resource::Webhook do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -462,7 +462,7 @@ RSpec.describe Nova::API::Resource::Webhook do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -530,7 +530,7 @@ RSpec.describe Nova::API::Resource::Webhook do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -603,7 +603,7 @@ RSpec.describe Nova::API::Resource::Webhook do
         let(:errors) { ['foo', 'bar'] }
 
         before do
-          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/restore").to_return(status: 400, body: JSON.generate({ errors: errors }))
+          stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}/restore").to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do

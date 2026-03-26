@@ -100,7 +100,7 @@ RSpec.describe Nova::API::Resource::CurrentAsset do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/statement").with(query: parameters).
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -205,7 +205,7 @@ RSpec.describe Nova::API::Resource::CurrentAsset do
 
         before do
           stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/statement").with(query: query_params).
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do

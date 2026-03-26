@@ -98,7 +98,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").with(query: parameters).
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -170,7 +170,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
       before do
         stub_request(:get, "#{described_class.base_url}/api/suppliers").with(query: parameters).
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -242,7 +242,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
       before do
         stub_request(:get, "#{described_class.base_url}/api/customers").with(query: parameters).
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -337,7 +337,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
       before do
         stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -439,7 +439,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -501,7 +501,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -600,7 +600,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
         before do
           stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -662,7 +662,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -767,7 +767,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -836,7 +836,7 @@ RSpec.describe Nova::API::Resource::ThirdParty do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do

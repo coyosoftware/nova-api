@@ -161,7 +161,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -276,7 +276,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/income_accounts").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -405,7 +405,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/payable_accounts").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -489,7 +489,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
       before do
         stub_request(:get, "#{described_class.base_url}#{described_class.endpoint}/receivable_accounts").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -551,7 +551,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
       before do
         stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-          to_return(status: 400, body: JSON.generate({ errors: errors }))
+          to_return(status: 400, body: JSON.generate(errors:))
       end
 
       it 'returns the response object' do
@@ -620,7 +620,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -682,7 +682,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -761,7 +761,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
         before do
           stub_request(:post, "#{described_class.base_url}#{described_class.endpoint}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -819,7 +819,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -891,7 +891,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
         before do
           stub_request(:patch, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
@@ -960,7 +960,7 @@ RSpec.describe Nova::API::Resource::FinancialAccount do
 
         before do
           stub_request(:delete, "#{described_class.base_url}#{described_class.endpoint}/#{id}").
-            to_return(status: 400, body: JSON.generate({ errors: errors }))
+            to_return(status: 400, body: JSON.generate(errors:))
         end
 
         it 'returns the response object' do
