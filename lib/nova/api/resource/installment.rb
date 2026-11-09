@@ -80,6 +80,14 @@ module Nova
 
           model.confirm
         end
+
+        def cancel_forecast
+          Forecast.cancel(id)
+        end
+
+        def destroy_forecast
+          Forecast.destroy(id)
+        end
       end
     end
   end

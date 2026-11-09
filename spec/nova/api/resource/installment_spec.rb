@@ -323,4 +323,43 @@ RSpec.describe Nova::API::Resource::Installment do
       end
     end
   end
+
+  shared_examples 'a forecast operation' do |operation, path_suffix|
+    let(:installment_parameters) { { due_date: '2025-01-01', number: 1, value: BigDecimal('100') } }
+
+    context 'when the id is not set' do
+      subject { described_class.new(installment_parameters) }
+
+      it 'raises the missing id error' do
+        expect { subject.public_send(operation) }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+      end
+    end
+
+    context 'when the id is set' do
+      subject { described_class.new(installment_parameters.merge(id:)) }
+
+      let(:id) { 99 }
+      let(:url) { "#{described_class.base_url}#{Nova::API::Resource::Forecast.endpoint}/#{id}#{path_suffix}" }
+
+      before { stub_request(:delete, url).to_return(status: 200, body: nil) }
+
+      it 'issues a delete to the forecast endpoint' do
+        subject.public_send(operation)
+
+        expect(a_request(:delete, url)).to have_been_made.once
+      end
+
+      it 'returns the response object' do
+        expect(subject.public_send(operation)).to be_a(Nova::API::Response)
+      end
+    end
+  end
+
+  describe '#cancel_forecast' do
+    it_behaves_like 'a forecast operation', :cancel_forecast, '/cancel'
+  end
+
+  describe '#destroy_forecast' do
+    it_behaves_like 'a forecast operation', :destroy_forecast, ''
+  end
 end

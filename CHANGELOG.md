@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-11-09
+
+### Added
+
+- Forecast cancellation endpoint (`Forecast.cancel` and `Forecast#cancel`)
+
+- Forecast destroy endpoint (`Forecast.destroy` and `Forecast#destroy`)
+
+- Forecast cancellation and destroy from an installment (`Installment#cancel_forecast` and `Installment#destroy_forecast`)
+
 ## [1.8.0] - 2026-11-09
 
 ### Added
@@ -222,7 +232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Apportionment related stuff
 
-[unreleased]: https://github.com/coyosoftware/nova-api/compare/v1.8.0...HEAD
+[unreleased]: https://github.com/coyosoftware/nova-api/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/coyosoftware/nova-api/releases/tag/v1.9.0
 [1.8.0]: https://github.com/coyosoftware/nova-api/releases/tag/v1.8.0
 [1.7.0]: https://github.com/coyosoftware/nova-api/releases/tag/v1.7.0
 [1.6.1]: https://github.com/coyosoftware/nova-api/releases/tag/v1.6.1

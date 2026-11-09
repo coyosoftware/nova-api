@@ -120,6 +120,82 @@ RSpec.describe Nova::API::Resource::Forecast do
     end
   end
 
+  shared_examples 'a forecast delete request' do |path_suffix|
+    context 'when the id is not set' do
+      let(:id) { nil }
+
+      it 'raises the missing id error' do
+        expect { subject }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+      end
+    end
+
+    context 'when the id is set' do
+      let(:id) { 99 }
+      let(:url) { "#{described_class.base_url}#{described_class.endpoint}/#{id}#{path_suffix}" }
+      let(:response) { double(:response, success?: true, parsed_response: nil, code: 200) }
+
+      it 'issues a delete to the forecast endpoint' do
+        expect(HTTParty).to receive(:delete).with(url, headers: authorization_header, format: :json).and_return(response)
+
+        subject
+      end
+
+      context 'with a successful response' do
+        before { stub_request(:delete, url).to_return(status: 200, body: nil) }
+
+        it 'returns the response object' do
+          expect(subject).to be_a(Nova::API::Response)
+        end
+
+        it 'returns no error' do
+          expect(subject.errors).to be_empty
+        end
+
+        it 'returns no record' do
+          expect(subject.record).to be_nil
+        end
+      end
+
+      context 'with an error response' do
+        let(:errors) { ['foo', 'bar'] }
+
+        before { stub_request(:delete, url).to_return(status: 400, body: JSON.generate(errors:)) }
+
+        it 'returns the response object' do
+          expect(subject).to be_a(Nova::API::Response)
+        end
+
+        it 'returns the errors' do
+          expect(subject.errors).to match_array(errors)
+        end
+      end
+    end
+  end
+
+  describe '.cancel' do
+    subject { described_class.cancel(id) }
+
+    it_behaves_like 'a forecast delete request', '/cancel'
+  end
+
+  describe '.destroy' do
+    subject { described_class.destroy(id) }
+
+    it_behaves_like 'a forecast delete request', ''
+  end
+
+  describe '#cancel' do
+    subject { described_class.initialize_empty_model_with_id(described_class, id, date: Date.today.iso8601, due_date: Date.today.iso8601).cancel }
+
+    it_behaves_like 'a forecast delete request', '/cancel'
+  end
+
+  describe '#destroy' do
+    subject { described_class.initialize_empty_model_with_id(described_class, id, date: Date.today.iso8601, due_date: Date.today.iso8601).destroy }
+
+    it_behaves_like 'a forecast delete request', ''
+  end
+
   describe '#endpoint' do
     let(:id) { 99 }
     let(:additional_information) { 'foobar' }

@@ -28,6 +28,18 @@ module Nova
           model.confirm
         end
 
+        def self.cancel(id)
+          model = initialize_empty_model_with_id(self, id, date: Date.today.iso8601, due_date: Date.today.iso8601)
+
+          model.cancel
+        end
+
+        def self.destroy(id)
+          model = initialize_empty_model_with_id(self, id, date: Date.today.iso8601, due_date: Date.today.iso8601)
+
+          model.destroy
+        end
+
         def endpoint
           protect_operation_from_missing_value
 
@@ -38,6 +50,18 @@ module Nova
           protect_operation_from_missing_value
 
           do_post("#{self.class.endpoint}/#{id}/confirm", allowed_attributes)
+        end
+
+        def cancel
+          protect_operation_from_missing_value
+
+          do_delete("#{endpoint}/cancel")
+        end
+
+        def destroy
+          protect_operation_from_missing_value
+
+          do_delete(endpoint)
         end
       end
     end
