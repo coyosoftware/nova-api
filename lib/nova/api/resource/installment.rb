@@ -74,6 +74,12 @@ module Nova
 
           do_delete("#{endpoint}/cancel_write_offs")
         end
+
+        def confirm(parameters)
+          model = Forecast.new(parameters.merge(id:))
+
+          model.confirm
+        end
       end
     end
   end

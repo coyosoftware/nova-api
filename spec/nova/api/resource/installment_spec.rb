@@ -270,4 +270,57 @@ RSpec.describe Nova::API::Resource::Installment do
       end
     end
   end
+
+  describe '#confirm' do
+    let(:additional_information) { 'foobar' }
+    let(:close) { false }
+    let(:date) { '2021-01-15' }
+    let(:document_type) { 0 }
+    let(:document_number) { 'ABC123' }
+    let(:due_date) { '2021-01-17' }
+    let(:financial_account_id) { 98 }
+    let(:first_due_date) { '2021-01-16' }
+    let(:gross_value) { BigDecimal('161') }
+    let(:third_party_id) { 88 }
+    let(:value) { BigDecimal('151') }
+    let(:apportionments) do
+      [{ apportionment_value_ids: [1, 2, 3], value: BigDecimal('100.33') }, { apportionment_value_ids: [4, 5, nil], value: BigDecimal('50.67') }]
+    end
+    let(:installment_parameters) { { due_date: '2025-01-01', number: 1, value: BigDecimal('100') } }
+    let(:parameters) do
+      {
+        additional_information:, apportionments:, close:, date:, document_type:,
+        document_number:, due_date:, financial_accounts: [{ financial_account_id:, value: }],
+        gross_value:, value:
+      }
+    end
+    let(:response) { double(:response, success?: true, code: 201, parsed_response: nil) }
+
+    subject { described_class.new(installment_parameters) }
+
+    context 'when the id is not set' do
+      it 'raises the missing id error' do
+        expect { subject.confirm(parameters) }.to raise_error(Nova::API::MissingIdError, 'This operation requires an ID to be set')
+      end
+    end
+
+    context 'when the id is set' do
+      subject { described_class.new(installment_parameters.merge(id:)) }
+
+      let(:id) { 99 }
+      let(:forecast) { double(:forecast, confirm: true) }
+
+      it 'initializes a new forecast' do
+        expect(Nova::API::Resource::Forecast).to receive(:new).with(parameters.merge(id:)).and_return(forecast)
+
+        subject.confirm(parameters)
+      end
+
+      it 'confirms the forecast' do
+        expect_any_instance_of(Nova::API::Resource::Forecast).to receive(:confirm).and_return(response)
+
+        subject.confirm(parameters)
+      end
+    end
+  end
 end
