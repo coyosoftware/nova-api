@@ -36,6 +36,16 @@ Nova::API.configure do |config|
 end
 ```
 
+Calling ```configure``` on the main thread, as an initializer does at boot, sets the configuration for the whole process. Calling it on any other thread, such as a Puma request thread, only affects that thread.
+
+Web servers reuse their threads, so anything set with ```configure``` during a request is still there for the next request served by that thread. For multi-tenant applications, prefer ```with_configuration```, which only applies during the block:
+
+```ruby
+around_action do |_controller, action|
+  Nova::API.with_configuration(subdomain: current_tenant.subdomain, api_key: current_tenant.api_key) { action.call }
+end
+```
+
 After that you can start using the resources either by:
 
 - Instantiating a new ```Nova::API::Client``` object;

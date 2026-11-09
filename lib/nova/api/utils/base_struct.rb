@@ -1,5 +1,6 @@
 require 'dry-struct'
 require 'dry-types'
+require 'forwardable'
 
 module Nova
   module API

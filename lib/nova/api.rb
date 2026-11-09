@@ -49,13 +49,51 @@ module Nova
     class MissingIdError < Error; end
     class EndpointNotConfiguredError < Error; end
 
+    THREAD_CONFIGURATION_KEY = :nova_api_configuration
+    private_constant :THREAD_CONFIGURATION_KEY
+
+    @configuration = Configuration.new
+
     class << self
+      # The configuration in effect for the current thread: its own, when it has
+      # one, or else the one shared by the whole process.
       def configuration
-        @configuration ||= Configuration.new
+        thread_configuration || @configuration
       end
 
+      # On the main thread (application boot) this changes the configuration
+      # shared by the whole process. On any other thread (a Puma request, for
+      # instance) it changes a copy private to that thread.
       def configure
-        yield(configuration)
+        yield(Thread.current == Thread.main ? configuration : own_thread_configuration)
+      end
+
+      # Runs the block with the given attributes overridden for the current
+      # thread only, restoring the previous configuration afterwards. Prefer this
+      # for per-request configuration, since nothing is left on the pooled thread.
+      def with_configuration(**overrides)
+        previous = thread_configuration
+        scoped = configuration.dup
+        overrides.each { |attribute, value| scoped.public_send("#{attribute}=", value) }
+        self.thread_configuration = scoped
+
+        yield
+      ensure
+        self.thread_configuration = previous
+      end
+
+      private
+
+      def own_thread_configuration
+        thread_configuration || (self.thread_configuration = @configuration.dup)
+      end
+
+      def thread_configuration
+        Thread.current.thread_variable_get(THREAD_CONFIGURATION_KEY)
+      end
+
+      def thread_configuration=(value)
+        Thread.current.thread_variable_set(THREAD_CONFIGURATION_KEY, value)
       end
     end
 

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-11-09
+
+### Added
+
+- `Nova::API.with_configuration`, which overrides configuration attributes for the current thread during a block
+
+### Changed
+
+- `Nova::API.configure` called outside the main thread now changes a copy private to that thread, instead of the configuration shared by the whole process
+
+### Fixed
+
+- `NameError` for `Forwardable` when requiring the gem in an environment that had not loaded it yet
+
 ## [1.9.0] - 2026-11-09
 
 ### Added
